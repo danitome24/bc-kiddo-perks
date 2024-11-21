@@ -25,19 +25,48 @@ contract KiddoPerksTest is Test {
         Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
       )
     );
-    kiddoPerks.createTask(taskName);
+    kiddoPerks.createTask(taskName, 2 * 1e18);
   }
 
   function testCanCreateTask() public {
     string memory taskName = "Clean up room";
 
     vm.prank(PARENT);
-    kiddoPerks.createTask(taskName);
+    kiddoPerks.createTask(taskName, 2 * 1e18);
 
-    (string memory title, bool completed) = kiddoPerks.tasks(0);
+    (string memory title,) = kiddoPerks.tasks(0);
 
     assertEq(kiddoPerks.tasksLength(), 1);
     assertEq(title, taskName);
-    assertFalse(completed);
+  }
+
+  function testOnlyParentCanMarkTaskAsCompleted() public withTaskCreated {
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.completeTask(0, CHILD_ONE);
+  }
+
+  function testParentCanMarkTaskAsCompleted() public withTaskCreated {
+    vm.prank(PARENT);
+    kiddoPerks.completeTask(0, CHILD_ONE);
+
+    bool isCompleted = kiddoPerks.isTaskCompletedBy(0, CHILD_ONE);
+
+    assertTrue(isCompleted);
+  }
+
+  /**
+   * Modifiers
+   */
+  modifier withTaskCreated() {
+    string memory taskName = "Clean up room";
+
+    vm.prank(PARENT);
+    kiddoPerks.createTask(taskName, 2 * 1e18);
+    _;
   }
 }

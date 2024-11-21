@@ -13,10 +13,11 @@ contract KiddoPerks is Ownable {
   Perk[] perks;
   mapping(uint256 => Task) public tasks;
   uint256 public tasksLength = 0;
+  mapping(uint256 => mapping(address => bool)) public completedTasksByUser;
 
   struct Task {
     string title;
-    bool completed;
+    uint256 tokensReward;
   }
 
   struct Perk {
@@ -30,16 +31,27 @@ contract KiddoPerks is Ownable {
    * Tasks
    */
   function createTask(
-    string memory title
+    string memory title,
+    uint256 tokensReward
   ) public onlyOwner {
-    tasks[tasksLength] = Task(title, false);
+    tasks[tasksLength] = Task(title, tokensReward);
     tasksLength++;
     emit TaskCreated(title);
   }
 
-  function completeTask(
-    uint256 id
-  ) public { }
+  function completeTask(uint256 taskId, address by) public onlyOwner {
+    completedTasksByUser[taskId][by] = true;
+    emit TaskCompleted(tasks[taskId].title, by);
+
+    // TODO: reward
+  }
+
+  function isTaskCompletedBy(
+    uint256 taskId,
+    address by
+  ) public view returns (bool) {
+    return completedTasksByUser[taskId][by];
+  }
 
   /**
    * Perks
