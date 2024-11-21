@@ -1,7 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-contract KiddoPerks {
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+
+contract KiddoPerks is Ownable {
   event TaskCreated(string title);
   event TaskCompleted(string title, address by);
   event PerkCreated(string title, uint256 tokensRequired);
@@ -22,14 +24,14 @@ contract KiddoPerks {
     uint256 tokensRequired;
   }
 
-  constructor() { }
+  constructor() Ownable(msg.sender) { }
 
   /**
    * Tasks
    */
   function createTask(
     string memory title
-  ) public {
+  ) public onlyOwner {
     tasks[tasksLength] = Task(title, false);
     tasksLength++;
     emit TaskCreated(title);
