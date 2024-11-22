@@ -7,7 +7,7 @@ import "./DeployHelpers.s.sol";
 contract DeployYourContract is ScaffoldETHDeploy {
   // use `deployer` from `ScaffoldETHDeploy`
   function run() external ScaffoldEthDeployerRunner {
-    address PARENT = 0x97289b9C7AE16114D993057F81f99457224a59b3;
+    address PARENT = 0x27dBc64e6C38633eD526d970258372476BCE58C0;
 
     KiddoPerks kiddoPerks = new KiddoPerks(PARENT);
     console.logString(

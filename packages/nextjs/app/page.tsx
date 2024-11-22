@@ -20,13 +20,15 @@ const Home: NextPage = () => {
     [parentAddress, connectedAddress],
   );
 
+  const welcomeSubtitle = isParent ? "Hey daddy/mommy!" : "Yo buddy";
+
   const dashboardToDisplay = isParent ? <ParentDashboard /> : <ChildDashboard />;
 
   if (parentAddress === undefined) {
     return (
       <>
         <Section>
-          <HeroBanner title="KiddoPerks" subtitle="Welcome to" />
+          <HeroBanner title="KiddoPerks" subtitle="" />
         </Section>
         <SectionGrow>Loading...</SectionGrow>
       </>
@@ -36,7 +38,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Section>
-        <HeroBanner title="KiddoPerks" subtitle="Welcome to" />
+        <HeroBanner title="KiddoPerks" subtitle={welcomeSubtitle} />
       </Section>
       <SectionGrow>{dashboardToDisplay}</SectionGrow>
     </>
