@@ -56,9 +56,13 @@ contract KiddoPerks is Ownable {
   /**
    * Perks
    */
-  function createPerk(string memory title, uint256 tokensRequired) public {
+  function createPerk(
+    string memory title,
+    uint256 tokensRequired
+  ) public onlyOwner {
     Perk memory newPerk = Perk(title, tokensRequired);
     perks.push(newPerk);
+    emit PerkCreated(title, tokensRequired);
   }
 
   /**
@@ -66,5 +70,5 @@ contract KiddoPerks is Ownable {
    */
   function addChild(
     address child
-  ) public { }
+  ) public onlyOwner { }
 }

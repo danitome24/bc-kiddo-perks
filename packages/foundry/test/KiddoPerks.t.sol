@@ -59,6 +59,16 @@ contract KiddoPerksTest is Test {
     assertTrue(isCompleted);
   }
 
+  function testOnlyParentCanCreatePerk() public withTaskCreated {
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.createPerk("Disneyland", 2 * 1e18);
+  }
+
   /**
    * Modifiers
    */
