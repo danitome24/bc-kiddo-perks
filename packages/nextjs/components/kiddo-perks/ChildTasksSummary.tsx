@@ -2,8 +2,8 @@ import Image from "next/image";
 
 export const ChildTasksSummary = () => {
   return (
-    <div className="flex flex-col gap-4 border-solid border-2 border-black rounded-md bg-secondary">
-      <div className="flex flex-row justify-center items-center py-6 px-3">
+    <div className="flex flex-col gap-4 border-solid border-2 border-black rounded-md bg-secondary p-4">
+      <div className="flex flex-row justify-center items-center">
         <Image src="/childAvatar.png" width={64} height={64} alt="Child picture" className="w-16 h-16 rounded-full" />
         <h4 className="px-4 font-semibold">Anna</h4>
       </div>
