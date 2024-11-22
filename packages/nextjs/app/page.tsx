@@ -2,6 +2,8 @@
 
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
+import { ChildDashboard, ParentDashboard, Section, SectionGrow } from "~~/components/kiddo-perks/";
+import { HeroBanner } from "~~/components/kiddo-perks/HeroBanner";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
@@ -14,22 +16,25 @@ const Home: NextPage = () => {
 
   const isParent = parentAddress != undefined && parentAddress == connectedAddress;
 
+  const dashboardToDisplay = isParent ? <ParentDashboard /> : <ChildDashboard />;
+
+  if (parentAddress == undefined) {
+    return (
+      <>
+        <Section>
+          <HeroBanner title="KiddoPerks" subtitle="Welcome to" />
+        </Section>
+        <SectionGrow>Loading...</SectionGrow>
+      </>
+    );
+  }
+
   return (
     <>
-      <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">KiddoPerks</span>
-          </h1>
-        </div>
-
-        <div className="flex-grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col sm:flex-row">
-            {isParent && <p>Hey Daddy!</p>}
-          </div>
-        </div>
-      </div>
+      <Section>
+        <HeroBanner title="KiddoPerks" subtitle="Welcome to" />
+      </Section>
+      <SectionGrow>{dashboardToDisplay}</SectionGrow>
     </>
   );
 };
