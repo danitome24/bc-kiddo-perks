@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { ChildDashboard, ParentDashboard, Section, SectionGrow } from "~~/components/kiddo-perks/";
@@ -14,11 +15,14 @@ const Home: NextPage = () => {
     functionName: "parent",
   });
 
-  const isParent = parentAddress != undefined && parentAddress == connectedAddress;
+  const isParent = useMemo(
+    () => parentAddress && parentAddress === connectedAddress,
+    [parentAddress, connectedAddress],
+  );
 
   const dashboardToDisplay = isParent ? <ParentDashboard /> : <ChildDashboard />;
 
-  if (parentAddress == undefined) {
+  if (parentAddress === undefined) {
     return (
       <>
         <Section>
