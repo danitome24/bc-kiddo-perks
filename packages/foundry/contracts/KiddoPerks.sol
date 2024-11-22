@@ -8,7 +8,7 @@ contract KiddoPerks is Ownable {
   event TaskCompleted(string title, address by);
   event PerkCreated(string title, uint256 tokensRequired);
 
-  address parent;
+  address public parent;
   address[] children;
   Perk[] perks;
   mapping(uint256 => Task) public tasks;
@@ -25,7 +25,11 @@ contract KiddoPerks is Ownable {
     uint256 tokensRequired;
   }
 
-  constructor() Ownable(msg.sender) { }
+  constructor(
+    address _parent
+  ) Ownable(_parent) {
+    parent = _parent;
+  }
 
   /**
    * Tasks

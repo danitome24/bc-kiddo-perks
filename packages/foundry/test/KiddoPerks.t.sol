@@ -14,8 +14,7 @@ contract KiddoPerksTest is Test {
   address CHILD_ONE = makeAddr("Miky");
 
   function setUp() public {
-    kiddoPerks = new KiddoPerks();
-    kiddoPerks.transferOwnership(PARENT);
+    kiddoPerks = new KiddoPerks(PARENT);
   }
 
   function testOnlyParentCanCreateTask() public {
