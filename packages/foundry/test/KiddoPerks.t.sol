@@ -8,6 +8,8 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 contract KiddoPerksTest is Test {
   KiddoPerks public kiddoPerks;
 
+  uint256 constant SMALL_REQUIRED_TOKENS_AMOUNT = 2 * 1e18;
+
   address PARENT = makeAddr("Daddy");
   address CHILD_ONE = makeAddr("Miky");
 
@@ -69,6 +71,16 @@ contract KiddoPerksTest is Test {
     kiddoPerks.createPerk("Disneyland", 2 * 1e18);
   }
 
+  event PerkCreated(string title, uint256 tokensRequired);
+
+  function testParentCanCreatePerk() public withTaskCreated {
+    string memory perkTitle = "Go to Disneyland Paris";
+    vm.prank(PARENT);
+    vm.expectEmit(true, true, false, true);
+    emit PerkCreated(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
+    kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
+  }
+
   /**
    * Modifiers
    */
@@ -76,7 +88,7 @@ contract KiddoPerksTest is Test {
     string memory taskName = "Clean up room";
 
     vm.prank(PARENT);
-    kiddoPerks.createTask(taskName, 2 * 1e18);
+    kiddoPerks.createTask(taskName, SMALL_REQUIRED_TOKENS_AMOUNT);
     _;
   }
 }
