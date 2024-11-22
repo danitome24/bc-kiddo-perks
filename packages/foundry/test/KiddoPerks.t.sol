@@ -30,10 +30,14 @@ contract KiddoPerksTest is Test {
     kiddoPerks.createTask(taskName, 2 * 1e18);
   }
 
+  event TaskCreated(string title);
+
   function testCanCreateTask() public {
     string memory taskName = "Clean up room";
 
     vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit TaskCreated(taskName);
     kiddoPerks.createTask(taskName, 2 * 1e18);
 
     (string memory title,) = kiddoPerks.tasks(0);
@@ -52,8 +56,12 @@ contract KiddoPerksTest is Test {
     kiddoPerks.completeTask(0, CHILD_ONE);
   }
 
+  event TaskCompleted(string title, address by);
+
   function testParentCanMarkTaskAsCompleted() public withTaskCreated {
     vm.prank(PARENT);
+    vm.expectEmit(true, true, false, true);
+    emit TaskCompleted("Clean up room", CHILD_ONE);
     kiddoPerks.completeTask(0, CHILD_ONE);
 
     bool isCompleted = kiddoPerks.isTaskCompletedBy(0, CHILD_ONE);
