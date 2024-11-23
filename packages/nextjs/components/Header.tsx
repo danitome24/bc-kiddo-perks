@@ -6,48 +6,80 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bars3Icon, BugAntIcon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
+import { useIsParent } from "~~/hooks/kiddo-perks";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
 type HeaderMenuLink = {
   label: string;
   href: string;
   icon?: React.ReactNode;
+  visibleTo: "both" | "parent" | "child";
 };
 
 export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Dashboard",
     href: "/",
+    visibleTo: "both",
+  },
+  {
+    label: "Childs",
+    href: "/childs",
+    visibleTo: "parent",
+  },
+  {
+    label: "Tasks",
+    href: "/tasks",
+    visibleTo: "both",
+  },
+  {
+    label: "Perks",
+    href: "/perks",
+    visibleTo: "parent",
   },
   {
     label: "Debug Contracts",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,
+    visibleTo: "parent",
   },
 ];
 
+export const isVisibleToParent = (link: HeaderMenuLink): boolean => {
+  return link.visibleTo == "parent" || link.visibleTo == "both";
+};
+
+export const isVisibleToChild = (link: HeaderMenuLink): boolean => {
+  return link.visibleTo == "child" || link.visibleTo == "both";
+};
+
 export const HeaderMenuLinks = () => {
   const pathname = usePathname();
+  const isParent = useIsParent();
 
   return (
     <>
-      {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
-        return (
-          <li key={href}>
-            <Link
-              href={href}
-              passHref
-              className={`${
-                isActive ? "bg-secondary shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
-            >
-              {icon}
-              <span>{label}</span>
-            </Link>
-          </li>
-        );
-      })}
+      {menuLinks
+        .filter(link => {
+          return isParent != undefined && isParent ? isVisibleToParent(link) : isVisibleToChild(link);
+        })
+        .map(({ label, href, icon }) => {
+          const isActive = pathname === href;
+          return (
+            <li key={href}>
+              <Link
+                href={href}
+                passHref
+                className={`${
+                  isActive ? "bg-secondary shadow-md" : ""
+                } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
+              >
+                {icon}
+                <span>{label}</span>
+              </Link>
+            </li>
+          );
+        })}
     </>
   );
 };
