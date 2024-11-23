@@ -8,10 +8,16 @@ export const ChildTasksSummary = () => {
         <h4 className="px-4 font-semibold">Anna</h4>
       </div>
       <div className="flex flex-col px-8">
-        <p className="my-1">Tokens: $1220</p>
-        <p className="my-1">Tasks completed: 1/10</p>
-        <p className="my-1">Perks redeemed: 4/10</p>
-        <button>See Details</button>
+        <p className="my-1 text-lg font-semibold">
+          Tokens: <span className="text-base font-normal">1220</span>
+        </p>
+        <p className="my-1 text-lg font-semibold">
+          Tasks completed: <span className="text-base font-normal">1/10</span>
+        </p>
+        <p className="my-1 text-lg font-semibold">
+          Perks redeemed: <span className="text-base font-normal">4/10</span>
+        </p>
+        <button className="btn btn-success btn-sm font-normal gap-1 mt-7">See child</button>
       </div>
     </div>
   );

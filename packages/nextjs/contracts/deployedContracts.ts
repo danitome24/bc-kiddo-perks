@@ -25,7 +25,12 @@ const deployedContracts = {
           name: "addChild",
           inputs: [
             {
-              name: "child",
+              name: "name",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "childAddr",
               type: "address",
               internalType: "address",
             },
@@ -217,6 +222,25 @@ const deployedContracts = {
           ],
           outputs: [],
           stateMutability: "nonpayable",
+        },
+        {
+          type: "event",
+          name: "ChildAdded",
+          inputs: [
+            {
+              name: "name",
+              type: "string",
+              indexed: false,
+              internalType: "string",
+            },
+            {
+              name: "childAddr",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
         },
         {
           type: "event",
