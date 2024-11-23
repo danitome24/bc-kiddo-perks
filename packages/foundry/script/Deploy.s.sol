@@ -2,12 +2,12 @@
 pragma solidity ^0.8.19;
 
 import "./DeployHelpers.s.sol";
-import { DeployYourContract } from "./DeployYourContract.s.sol";
+import { DeployKiddoPerks } from "./DeployKiddoPerks.s.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
   function run() external {
-    DeployYourContract deployYourContract = new DeployYourContract();
-    deployYourContract.run();
+    DeployKiddoPerks deployKiddoPerks = new DeployKiddoPerks();
+    deployKiddoPerks.run();
 
     // deploy more contracts here
     // DeployMyContract deployMyContract = new DeployMyContract();

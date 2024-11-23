@@ -11,6 +11,7 @@ export const ChildTasksSummary = () => {
         <p className="my-1">Tokens: $1220</p>
         <p className="my-1">Tasks completed: 1/10</p>
         <p className="my-1">Perks redeemed: 4/10</p>
+        <button>See Details</button>
       </div>
     </div>
   );
