@@ -7,9 +7,10 @@ contract KiddoPerks is Ownable {
   event TaskCreated(string title);
   event TaskCompleted(string title, address by);
   event PerkCreated(string title, uint256 tokensRequired);
+  event ChildAdded(string name, address childAddr);
 
   address public parent;
-  address[] children;
+  Child[] children;
   Perk[] perks;
   mapping(uint256 => Task) public tasks;
   uint256 public tasksLength = 0;
@@ -23,6 +24,11 @@ contract KiddoPerks is Ownable {
   struct Perk {
     string title;
     uint256 tokensRequired;
+  }
+
+  struct Child {
+    string name;
+    address childAddr;
   }
 
   constructor(
@@ -72,7 +78,10 @@ contract KiddoPerks is Ownable {
   /**
    * Children
    */
-  function addChild(
-    address child
-  ) public onlyOwner { }
+  function addChild(string memory name, address childAddr) public onlyOwner {
+    Child memory newChild = Child(name, childAddr);
+    children.push(newChild);
+
+    emit ChildAdded(name, childAddr);
+  }
 }

@@ -88,6 +88,27 @@ contract KiddoPerksTest is Test {
     kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
   }
 
+  function testRevertsIfNoParentTriesToAddChild() public withTaskCreated {
+    string memory childName = "Willy";
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.addChild(childName, CHILD_ONE);
+  }
+
+  event ChildAdded(string name, address childAddr);
+
+  function testParentCanAddAChild() public withTaskCreated {
+    string memory childName = "Willy";
+    vm.prank(PARENT);
+    vm.expectEmit(true, true, false, true);
+    emit ChildAdded(childName, CHILD_ONE);
+    kiddoPerks.addChild(childName, CHILD_ONE);
+  }
+
   /**
    * Modifiers
    */
