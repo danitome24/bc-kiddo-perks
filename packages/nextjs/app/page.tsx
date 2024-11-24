@@ -4,13 +4,44 @@ import type { NextPage } from "next";
 import { ChildDashboard, ParentDashboard, Section, SectionGrow } from "~~/components/kiddo-perks/";
 import { HeroBanner } from "~~/components/kiddo-perks/HeroBanner";
 import { useIsParent } from "~~/hooks/kiddo-perks";
+import { Child, Perk, Task } from "~~/types/kiddoPerks";
+
+const mockChildrenData: Child[] = [
+  {
+    id: 1,
+    name: "Juan",
+    avatar: "/childAvatar.png",
+    tokens: 320,
+    progress: { completed: 5, total: 7 },
+  },
+  {
+    id: 2,
+    name: "Sofía",
+    avatar: "/childAvatar.png",
+    tokens: 220,
+    progress: { completed: 3, total: 6 },
+  },
+];
+
+const mockPerks: Perk[] = [
+  { id: 1, name: "1 hora extra de TV", cost: 50 },
+  { id: 2, name: "Dormir tarde", cost: 80 },
+];
+
+const mockActivities: Task[] = [
+  { id: 1, description: "Sofía completó la tarea: Leer 30 minutos." },
+  { id: 2, description: "Juan canjeó el perk: 1 hora extra de TV." },
+  { id: 3, description: "Nueva tarea asignada: Recoger juguetes." },
+];
 
 const Home: NextPage = () => {
   const isParent = useIsParent();
 
-  const welcomeSubtitle = isParent ? "Hey daddy/mommy!" : "Yo buddy";
-
-  const dashboardToDisplay = isParent ? <ParentDashboard /> : <ChildDashboard />;
+  const dashboardToDisplay = isParent ? (
+    <ParentDashboard childrenData={mockChildrenData} perks={mockPerks} activities={mockActivities} />
+  ) : (
+    <ChildDashboard />
+  );
 
   if (isParent === undefined) {
     return (
@@ -23,14 +54,7 @@ const Home: NextPage = () => {
     );
   }
 
-  return (
-    <>
-      <Section>
-        <HeroBanner title="KiddoPerks" subtitle={welcomeSubtitle} />
-      </Section>
-      <SectionGrow>{dashboardToDisplay}</SectionGrow>
-    </>
-  );
+  return <SectionGrow>{dashboardToDisplay}</SectionGrow>;
 };
 
 export default Home;

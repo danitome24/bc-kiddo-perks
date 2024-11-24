@@ -1,19 +1,23 @@
-import { ChildTasksSummary } from "./ChildTasksSummary";
+import { ChildrenSummary, DashboardBanner, PerksSummary, TasksSummary } from "./";
+import { Child, Perk, Task } from "~~/types/kiddoPerks";
 
-export const ParentDashboard = () => {
+type DashboardProps = {
+  childrenData: Child[];
+  perks: Perk[];
+  activities: Task[];
+};
+
+export const ParentDashboard = ({ childrenData, perks, activities }: DashboardProps) => {
   return (
-    <div className="flex-grow w-full px-8 py-16">
-      <div className="flex flex-row justify-center items-center mb-5">
-        <h4 className="text-2xl">Child resume</h4>
+    <div className="px-8 py-16">
+      <DashboardBanner childrenLength={childrenData.length} tasksLength={activities.length} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <ChildrenSummary childrenData={childrenData} />
+        <PerksSummary perks={perks} />
       </div>
-      <div className="flex flex-wrap justify-center items-center gap-12 flex-col sm:flex-row">
-        <ChildTasksSummary />
-        <ChildTasksSummary />
-        <ChildTasksSummary />
-        <ChildTasksSummary />
-        <ChildTasksSummary />
-        <ChildTasksSummary />
-      </div>
+
+      <TasksSummary tasks={activities} />
     </div>
   );
 };
