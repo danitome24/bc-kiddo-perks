@@ -3,7 +3,7 @@ export type Child = {
   name: string;
   avatar: string;
   tokens: number;
-  progress: { completed: number; total: number };
+  progress?: { completed: number; total: number };
 };
 
 export type Perk = {

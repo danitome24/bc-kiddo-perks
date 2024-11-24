@@ -19,8 +19,8 @@ export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
         <div className="flex justify-between items-center w-36">
           <progress
             className="progress progress-primary"
-            value={child.progress.completed}
-            max={child.progress.total}
+            value={child.progress?.completed}
+            max={child.progress?.total}
           ></progress>
         </div>
       </div>
