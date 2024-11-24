@@ -2,24 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { mockChildrenData } from "../data/mockData";
 import { NextPage } from "next";
 import { Child } from "~~/types/kiddoPerks";
 
 const ChildPage: NextPage = () => {
-  const [children, setChildren] = useState<Child[]>([
-    {
-      id: 1,
-      name: "Sofia",
-      avatar: "https://via.placeholder.com/64",
-      tokens: 320,
-    },
-    {
-      id: 2,
-      name: "Juan",
-      avatar: "https://via.placeholder.com/64",
-      tokens: 220,
-    },
-  ]);
+  const [children, setChildren] = useState<Child[]>(mockChildrenData);
 
   const [newChild, setNewChild] = useState<Child>({
     id: 0,
@@ -39,7 +27,7 @@ const ChildPage: NextPage = () => {
   };
 
   return (
-    <div className="px-8 py-16 bg-primary-300 min-h-screen flex justify-center">
+    <div className="px-8 py-16 bg-primary-300 flex justify-center">
       <div className=" items-center">
         <div className="flex flex-col justify-center items-center mb-5">
           <h1 className="text-2xl font-bold text-primary-content">Welcome, Mommy/Daddy! 👋</h1>
