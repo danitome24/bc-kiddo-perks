@@ -21,11 +21,27 @@ const mockChildrenData: Child[] = [
     tokens: 220,
     progress: { completed: 3, total: 6 },
   },
+  {
+    id: 3,
+    name: "Pepe",
+    avatar: "/childAvatar.png",
+    tokens: 220,
+    progress: { completed: 3, total: 6 },
+  },
+  {
+    id: 4,
+    name: "María",
+    avatar: "/childAvatar.png",
+    tokens: 220,
+    progress: { completed: 3, total: 6 },
+  },
 ];
 
 const mockPerks: Perk[] = [
   { id: 1, name: "1 hora extra de TV", cost: 50 },
   { id: 2, name: "Dormir tarde", cost: 80 },
+  { id: 3, name: "Bolsa de chuches", cost: 80 },
+  { id: 4, name: "Pizza para cenar", cost: 80 },
 ];
 
 const mockActivities: Task[] = [

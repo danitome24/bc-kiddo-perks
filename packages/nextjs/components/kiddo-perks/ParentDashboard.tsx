@@ -12,7 +12,7 @@ export const ParentDashboard = ({ childrenData, perks, activities }: DashboardPr
     <div className="px-8 py-16">
       <DashboardBanner childrenLength={childrenData.length} tasksLength={activities.length} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChildrenSummary childrenData={childrenData} />
         <PerksSummary perks={perks} />
       </div>

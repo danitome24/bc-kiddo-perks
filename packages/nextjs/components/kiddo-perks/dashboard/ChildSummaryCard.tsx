@@ -16,16 +16,16 @@ export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
         </div>
       </div>
       <div className="mt-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center w-36">
           <progress
-            className="progress progress-primary w-56"
+            className="progress progress-primary"
             value={child.progress.completed}
             max={child.progress.total}
           ></progress>
         </div>
       </div>
       <div className="mt-4 flex gap-2">
-        <button className="btn btn-primary">See details</button>
+        <button className="btn btn-primary btn-sm">See details</button>
       </div>
     </div>
   );

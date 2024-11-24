@@ -7,7 +7,7 @@ type ChildrenSummaryProps = {
 
 export const ChildrenSummary = ({ childrenData }: ChildrenSummaryProps) => {
   return (
-    <section className="lg:col-span-2">
+    <section className="">
       <h2 className="text-lg font-semibold text-primary-content mb-4">Children Status</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {childrenData.map(child => (
