@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { mockChildrenData, mockTasks } from "../data/mockData";
 import { NextPage } from "next";
+import { CrossButton } from "~~/components/kiddo-perks";
 import { Task } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
@@ -14,6 +15,10 @@ const TasksPage: NextPage = () => {
     if (!newTask.description) return;
     setTasks([...tasks, { id: tasks.length + 1, description: newTask.description }]);
     setNewTask({ description: "" });
+  };
+
+  const handleDeleteTask = (id: number) => {
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   return (
@@ -31,10 +36,11 @@ const TasksPage: NextPage = () => {
               {tasks.map(task => (
                 <div
                   key={task.id}
-                  className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between items-center"
+                  className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between"
                 >
-                  <div>
-                    <h3 className="text-normal font-medium ">{task.description}</h3>
+                  <div className="flex flex-row justify-between">
+                    <h3 className="text-normal font-medium content-center">{task.description}</h3>
+                    <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
                   </div>
                   <div className="">
                     <label className="form-control w-full max-w-xs">

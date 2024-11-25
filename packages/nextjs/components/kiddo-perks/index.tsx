@@ -8,3 +8,4 @@ export * from "./dashboard/Banner";
 export * from "./dashboard/TasksSummary";
 export * from "./dashboard/ChildrenSummary";
 export * from "./dashboard/PerksSummary";
+export * from "./CrossButton";
