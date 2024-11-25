@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { mockPerks } from "../data/mockData";
 import { NextPage } from "next";
+import { CrossButton } from "~~/components/kiddo-perks";
 import { Perk } from "~~/types/kiddoPerks";
 
 const PerksPage: NextPage = () => {
@@ -33,15 +34,13 @@ const PerksPage: NextPage = () => {
             <h2 className="text-lg font-semibold mb-4">Current Perks</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {perks.map(perk => (
-                <div key={perk.id} className="bg-secondary shadow-md rounded-lg p-4 flex justify-between items-center">
-                  <div>
+                <div key={perk.id} className="bg-secondary shadow-md rounded-lg p-4 flex justify-between items-start">
+                  <div className="flex flex-col">
                     <h3 className="text-sm font-medium">{perk.name}</h3>
                     <p className="text-xs ">Cost: {perk.cost} points</p>
                   </div>
-                  <div>
-                    <button onClick={() => handleDeletePerk(perk.id)} className="btn btn-link text-error">
-                      Delete
-                    </button>
+                  <div className="ml-auto">
+                    <CrossButton onClickEvent={() => handleDeletePerk(perk.id)}></CrossButton>
                   </div>
                 </div>
               ))}

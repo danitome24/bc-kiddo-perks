@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { mockChildrenData } from "../data/mockData";
 import { NextPage } from "next";
+import { CrossButton } from "~~/components/kiddo-perks";
 import { Child } from "~~/types/kiddoPerks";
 
 const ChildPage: NextPage = () => {
@@ -47,14 +48,12 @@ const ChildPage: NextPage = () => {
                     src={"/childAvatar.png"}
                     alt={child.name}
                   />
-                  <div className="flex-col">
+                  <div className="flex flex-col">
                     <h3 className="text-lg font-bold ">{child.name}</h3>
                     <p className="text-sm ">KDP: {child.tokens}</p>
                   </div>
-                  <div className="flex">
-                    <button className="btn btn-link text-error" onClick={() => handleDeleteChild(child.id)}>
-                      Delete
-                    </button>
+                  <div className="ml-auto">
+                    <CrossButton onClickEvent={() => handleDeleteChild(child.id)}></CrossButton>
                   </div>
                 </div>
               ))}
