@@ -10,9 +10,11 @@ export type Perk = {
   id: number;
   name: string;
   cost: number;
+  redeemedBy?: string[];
 };
 
 export type Task = {
   id: number;
   description: string;
+  status?: string;
 };

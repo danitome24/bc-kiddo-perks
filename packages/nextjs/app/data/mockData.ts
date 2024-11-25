@@ -32,16 +32,16 @@ const mockChildrenData: Child[] = [
 ];
 
 const mockPerks: Perk[] = [
-  { id: 1, name: "1 hora extra de TV", cost: 50 },
+  { id: 1, name: "1 hora extra de TV", cost: 50, redeemedBy: ["Anna", "Pablo"] },
   { id: 2, name: "Dormir tarde", cost: 80 },
-  { id: 3, name: "Bolsa de chuches", cost: 80 },
-  { id: 4, name: "Pizza para cenar", cost: 80 },
+  { id: 3, name: "Bolsa de chuches", cost: 80, redeemedBy: ["Luis", "Spfía"] },
+  { id: 4, name: "Pizza para cenar", cost: 200 },
 ];
 
 const mockTasks: Task[] = [
-  { id: 1, description: "Hacer la cama" },
-  { id: 2, description: "Lavarse los dientes" },
-  { id: 3, description: "Recoger juguetes" },
+  { id: 1, description: "Hacer la cama", status: "Pending" },
+  { id: 2, description: "Lavarse los dientes", status: "Pending" },
+  { id: 3, description: "Recoger juguetes", status: "Pending" },
 ];
 
 const mockTasksHistory: Task[] = [

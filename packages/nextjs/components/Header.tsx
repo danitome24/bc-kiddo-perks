@@ -30,7 +30,7 @@ export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Tasks",
     href: "/tasks",
-    visibleTo: "both",
+    visibleTo: "parent",
   },
   {
     label: "Perks",
