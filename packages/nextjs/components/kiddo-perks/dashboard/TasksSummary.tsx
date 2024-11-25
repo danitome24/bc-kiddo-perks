@@ -11,7 +11,7 @@ export const TasksSummary = ({ tasks }: TasksSummaryProps) => {
       <h2 className="text-lg font-semibold mb-4">Recent Activity Summary</h2>
       <ul className="bg-secondary shadow-md rounded-lg divide-y divide-gray-200">
         {tasks.map(task => (
-          <li key={task.id} className="flex items-start p-4 hover:bg-gray-50 transition">
+          <li key={task.id} className="flex items-start p-4">
             <Image
               className="w-16 h-16 rounded-full"
               width={90}

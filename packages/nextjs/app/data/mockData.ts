@@ -3,7 +3,7 @@ import { Child, Perk, Task } from "~~/types/kiddoPerks";
 const mockChildrenData: Child[] = [
   {
     id: 1,
-    name: "Juan",
+    name: "Joe",
     avatar: "/childAvatar.png",
     tokens: 320,
     progress: { completed: 5, total: 7 },
@@ -17,37 +17,38 @@ const mockChildrenData: Child[] = [
   },
   {
     id: 3,
-    name: "Pepe",
+    name: "Laura",
     avatar: "/childAvatar.png",
-    tokens: 220,
+    tokens: 5,
     progress: { completed: 3, total: 6 },
   },
   {
     id: 4,
-    name: "María",
+    name: "Edwin",
     avatar: "/childAvatar.png",
-    tokens: 220,
+    tokens: 10,
     progress: { completed: 3, total: 6 },
   },
 ];
 
 const mockPerks: Perk[] = [
-  { id: 1, name: "1 hora extra de TV", cost: 50, redeemedBy: ["Anna", "Pablo"] },
-  { id: 2, name: "Dormir tarde", cost: 80 },
-  { id: 3, name: "Bolsa de chuches", cost: 80, redeemedBy: ["Luis", "Spfía"] },
-  { id: 4, name: "Pizza para cenar", cost: 200 },
+  { id: 1, name: "1 extra hour of TV time", cost: 50, redeemedBy: ["Edwin", "Laura"] },
+  { id: 2, name: "Choose the family movie", cost: 80 },
+  { id: 3, name: "Stay up 30 minutes past bedtime", cost: 80, redeemedBy: ["Sofía"] },
+  { id: 4, name: "Get a new toy", cost: 200 },
 ];
 
 const mockTasks: Task[] = [
-  { id: 1, description: "Hacer la cama", status: "Pending" },
-  { id: 2, description: "Lavarse los dientes", status: "Pending" },
-  { id: 3, description: "Recoger juguetes", status: "Pending" },
+  { id: 1, description: "Make your bed", status: "Pending" },
+  { id: 2, description: "Do your homework", status: "Pending" },
+  { id: 3, description: "Feed the pets", status: "Pending" },
+  { id: 4, description: "Help with dinner", status: "Pending" },
 ];
 
 const mockTasksHistory: Task[] = [
-  { id: 1, description: "Sofía completó la tarea: Leer 30 minutos." },
-  { id: 2, description: "Juan canjeó el perk: 1 hora extra de TV." },
-  { id: 3, description: "Nueva tarea asignada: Recoger juguetes." },
+  { id: 1, description: "Make your bed: Completed by Sofia." },
+  { id: 2, description: "Edwin redeemed:1 extra hour of TV time." },
+  { id: 3, description: "New Task created: Help with dinner" },
 ];
 
 export { mockChildrenData, mockPerks, mockTasks, mockTasksHistory };
