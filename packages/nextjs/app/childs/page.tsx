@@ -27,7 +27,7 @@ const ChildPage: NextPage = () => {
   };
 
   return (
-    <div className="px-8 py-16 bg-primary-300 flex justify-center">
+    <div className="px-8 py-16 flex justify-center">
       <div className=" items-center">
         <div className="flex flex-col justify-center items-center mb-5">
           <h1 className="text-2xl font-bold text-primary-content">Welcome, Mommy/Daddy! 👋</h1>
