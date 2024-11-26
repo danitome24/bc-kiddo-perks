@@ -7,7 +7,7 @@ type ChildSummaryCardProps = {
 
 export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
   return (
-    <div className="card bg-primary w-96 shadow-xl">
+    <div className="card bg-primary w-60 shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
           <Image className="w-16 h-16 rounded-full" width={90} height={90} src={child.avatar} alt={child.name} />
