@@ -9,7 +9,7 @@ export const ChildDashboard = () => {
       <header className="mb-6 text-center">
         <h1 className="text-2xl font-bold text-gray-800">Welcome, Sofia!</h1>
         <p className="">
-          You have <span className="text-secondary font-semibold">{points} points</span> to spend!
+          You have <span className="text-secondary font-semibold text-2xl">{points} tokens</span> to spend!
         </p>
       </header>
 
