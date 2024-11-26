@@ -2,8 +2,7 @@
 
 import { mockChildrenData, mockPerks, mockTasksHistory } from "./data/mockData";
 import type { NextPage } from "next";
-import { ChildDashboard, ParentDashboard, Section, SectionGrow } from "~~/components/kiddo-perks/";
-import { HeroBanner } from "~~/components/kiddo-perks/HeroBanner";
+import { ChildDashboard, ParentDashboard, SectionGrow } from "~~/components/kiddo-perks/";
 import { useIsParent } from "~~/hooks/kiddo-perks";
 
 const Home: NextPage = () => {
@@ -18,9 +17,6 @@ const Home: NextPage = () => {
   if (isParent === undefined) {
     return (
       <>
-        <Section>
-          <HeroBanner title="KiddoPerks" subtitle="" />
-        </Section>
         <SectionGrow>Loading...</SectionGrow>
       </>
     );

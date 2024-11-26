@@ -1,4 +1,4 @@
-import { ChildrenSummary, DashboardBanner, PerksSummary, TasksSummary } from "./";
+import { ChildrenSummary, ContentHeader, PerksSummary, TasksSummary } from "./";
 import { Child, Perk, Task } from "~~/types/kiddoPerks";
 
 type DashboardProps = {
@@ -10,7 +10,10 @@ type DashboardProps = {
 export const ParentDashboard = ({ childrenData, perks, activities }: DashboardProps) => {
   return (
     <div className="px-8 py-16">
-      <DashboardBanner childrenLength={childrenData.length} tasksLength={activities.length} />
+      <ContentHeader
+        title="Welcome daddy/mommy 👋"
+        subtitle="Track your child's progress, manage tasks, and approve rewards with ease."
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <ChildrenSummary childrenData={childrenData} />

@@ -1,3 +1,4 @@
+import { ContentHeader } from ".";
 import { mockPerks, mockTasks } from "~~/app/data/mockData";
 
 export const ChildDashboard = () => {
@@ -5,13 +6,14 @@ export const ChildDashboard = () => {
 
   return (
     <div className="p-6 min-h-screen">
-      {/* Header */}
-      <header className="mb-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-800">Welcome, Sofia!</h1>
-        <p className="">
-          You have <span className="text-secondary font-semibold text-2xl">{points} tokens</span> to spend!
-        </p>
-      </header>
+      <ContentHeader
+        title="Welcome, Sofia!"
+        subtitle={
+          <>
+            You have <span className="text-secondary font-semibold text-2xl">{points} tokens</span> to spend!
+          </>
+        }
+      />
 
       {/* Main Dashboard */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
