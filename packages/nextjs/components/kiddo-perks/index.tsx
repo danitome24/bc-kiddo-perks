@@ -9,3 +9,7 @@ export * from "./dashboard/ChildrenSummary";
 export * from "./dashboard/PerksSummary";
 export * from "./CrossButton";
 export * from "./dashboard/ContentHeader";
+export * from "./dashboard/TasksProgress";
+export * from "./dashboard/TokensBalance";
+export * from "./dashboard/TasksList";
+export * from "./dashboard/PerksListGrid";
