@@ -17,7 +17,7 @@ export const Footer = () => {
   const isLocalNetwork = targetNetwork.id === hardhat.id;
 
   return (
-    <footer className="footer footer-center bg-base-300 text-base-content p-4">
+    <footer className="footer footer-center bg-base-400 text-base-content p-4">
       <div>
         <div className="fixed flex justify-between items-center w-full z-10 p-4 bottom-0 left-0 pointer-events-none">
           <div className="flex flex-col md:flex-row gap-2 pointer-events-auto">

@@ -13,3 +13,4 @@ export * from "./dashboard/TasksProgress";
 export * from "./dashboard/TokensBalance";
 export * from "./dashboard/TasksList";
 export * from "./dashboard/PerksListGrid";
+export * from "./perks/PerkCard";

@@ -7,25 +7,21 @@ type ChildSummaryCardProps = {
 
 export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
   return (
-    <div key={child.id} className="bg-secondary shadow-md rounded-lg p-4">
-      <div className="flex items-center gap-4">
-        <Image className="w-16 h-16 rounded-full" width={90} height={90} src={child.avatar} alt={child.name} />
-        <div>
-          <h3 className="text-lg font-bold ">{child.name}</h3>
-          <p className="text-sm ">{child.tokens} KDO</p>
+    <div className="card bg-primary w-96 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title">
+          <Image className="w-16 h-16 rounded-full" width={90} height={90} src={child.avatar} alt={child.name} />
+          {child.name}
+        </h2>
+        <p className="text-lg text-right m-0">{child.tokens} KDO</p>
+        <progress
+          className="progress progress-neutral"
+          value={child.progress?.completed}
+          max={child.progress?.total}
+        ></progress>
+        <div className="card-actions justify-end">
+          <button className="btn btn-secondary btn-sm">See child</button>
         </div>
-      </div>
-      <div className="mt-4">
-        <div className="flex justify-between items-center w-36">
-          <progress
-            className="progress progress-primary"
-            value={child.progress?.completed}
-            max={child.progress?.total}
-          ></progress>
-        </div>
-      </div>
-      <div className="mt-4 flex gap-2">
-        <button className="btn btn-primary btn-sm">See details</button>
       </div>
     </div>
   );
