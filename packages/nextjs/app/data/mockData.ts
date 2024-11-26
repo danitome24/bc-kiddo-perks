@@ -1,4 +1,4 @@
-import { Child, Perk, Task } from "~~/types/kiddoPerks";
+import { Activity, Child, Perk, Task } from "~~/types/kiddoPerks";
 
 const mockChildrenData: Child[] = [
   {
@@ -45,7 +45,7 @@ const mockTasks: Task[] = [
   { id: 4, description: "Help with dinner", status: "Pending" },
 ];
 
-const mockTasksHistory: Task[] = [
+const mockTasksHistory: Activity[] = [
   { id: 1, description: "Make your bed: Completed by Sofia." },
   { id: 2, description: "Edwin redeemed:1 extra hour of TV time." },
   { id: 3, description: "New Task created: Help with dinner" },

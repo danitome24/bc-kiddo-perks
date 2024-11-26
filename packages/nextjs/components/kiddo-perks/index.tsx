@@ -4,7 +4,7 @@ export * from "./ChildDashboard";
 export * from "./ParentDashboard";
 export * from "./dashboard/ChildSummaryCard";
 export * from "./dashboard/ContentHeader";
-export * from "./dashboard/TasksSummary";
+export * from "./dashboard/RecentActivitySummary";
 export * from "./dashboard/ChildrenSummary";
 export * from "./dashboard/PerksSummary";
 export * from "./CrossButton";

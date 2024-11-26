@@ -18,3 +18,8 @@ export type Task = {
   description: string;
   status?: string;
 };
+
+export type Activity = {
+  id: number;
+  description: string;
+};
