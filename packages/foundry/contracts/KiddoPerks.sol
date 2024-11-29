@@ -110,7 +110,18 @@ contract KiddoPerks is Ownable {
     uint256 id
   ) public onlyOwner {
     delete children[id];
+    childrenLength--;
 
     emit ChildRemoved(id);
+  }
+
+  function getAllChildren() public view returns (Child[] memory) {
+    Child[] memory allChildren = new Child[](childrenLength);
+
+    for (uint256 i = 0; i < childrenLength; i++) {
+      allChildren[i] = children[i];
+    }
+
+    return allChildren;
   }
 }

@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { mockChildrenData } from "../data/mockData";
 import { NextPage } from "next";
 import { CrossButton } from "~~/components/kiddo-perks";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
 const ChildPage: NextPage = () => {
-  const [children, setChildren] = useState<Child[]>(mockChildrenData);
+  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
+
+  const [children, setChildren] = useState<Child[]>([]);
 
   const [newChild, setNewChild] = useState<Child>({
     id: 0,
@@ -17,8 +19,37 @@ const ChildPage: NextPage = () => {
     tokens: 0,
   });
 
-  const handleAddChild = () => {
+  const { data: currentChildren } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllChildren",
+  });
+
+  useEffect(() => {
+    if (Array.isArray(currentChildren)) {
+      const parsedCurrentChildren = currentChildren.map((child, i) => {
+        console.log(child);
+        return {
+          id: i,
+          name: child.name,
+          avatar: "",
+          tokens: 0,
+        };
+      });
+      setChildren([...parsedCurrentChildren]);
+    }
+  }, [currentChildren]);
+
+  const handleAddChild = async () => {
     if (!newChild.name) return;
+    try {
+      await writeKiddoPerksContract({
+        functionName: "addChild",
+        args: [newChild.name, "0x27dBc64e6C38633eD526d970258372476BCE58C0" as `0x${string}`],
+      });
+    } catch (e) {
+      console.error("Error adding new child: ", e);
+    }
+
     setChildren([...children, { ...newChild, id: children.length + 1, tokens: 0 }]);
     setNewChild({ id: 0, name: "", avatar: "", tokens: 0 });
   };
