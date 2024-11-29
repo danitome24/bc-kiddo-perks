@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract KiddoPerks is Ownable {
   event TaskCreated(string title);
@@ -9,6 +10,7 @@ contract KiddoPerks is Ownable {
   event PerkCreated(string title, uint256 tokensRequired);
   event ChildAdded(string name, address childAddr);
 
+  IERC20 token;
   address public parent;
   Child[] children;
   Perk[] perks;
@@ -31,10 +33,9 @@ contract KiddoPerks is Ownable {
     address childAddr;
   }
 
-  constructor(
-    address _parent
-  ) Ownable(_parent) {
+  constructor(address _parent, IERC20 _token) Ownable(_parent) {
     parent = _parent;
+    token = _token;
   }
 
   /**
