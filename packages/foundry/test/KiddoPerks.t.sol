@@ -3,10 +3,12 @@ pragma solidity ^0.8.13;
 
 import { Test } from "forge-std/Test.sol";
 import { KiddoPerks } from "../contracts/KiddoPerks.sol";
+import { KDOToken } from "../contracts/KDOToken.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract KiddoPerksTest is Test {
   KiddoPerks public kiddoPerks;
+  KDOToken public kdoToken;
 
   uint256 constant SMALL_REQUIRED_TOKENS_AMOUNT = 2 * 1e18;
 
@@ -14,7 +16,10 @@ contract KiddoPerksTest is Test {
   address CHILD_ONE = makeAddr("Miky");
 
   function setUp() public {
-    kiddoPerks = new KiddoPerks(PARENT);
+    kdoToken = new KDOToken();
+
+    kiddoPerks = new KiddoPerks(kdoToken);
+    kiddoPerks.setParent(PARENT);
   }
 
   function testOnlyParentCanCreateTask() public {
@@ -107,6 +112,19 @@ contract KiddoPerksTest is Test {
     vm.expectEmit(true, true, false, true);
     emit ChildAdded(childName, CHILD_ONE);
     kiddoPerks.addChild(childName, CHILD_ONE);
+  }
+
+  event ChildRemoved(uint256 id);
+
+  function testParentCanRemoveAChild() public withTaskCreated {
+    string memory childName = "Willy";
+    vm.prank(PARENT);
+    kiddoPerks.addChild(childName, CHILD_ONE);
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit ChildRemoved(0);
+    kiddoPerks.removeChild(0);
   }
 
   /**

@@ -9,11 +9,13 @@ contract KiddoPerks is Ownable {
   event TaskCompleted(string title, address by);
   event PerkCreated(string title, uint256 tokensRequired);
   event ChildAdded(string name, address childAddr);
+  event ChildRemoved(uint256 id);
   event ParentUpdated(address newParentAddress);
 
   IERC20 token;
   address public parent;
-  Child[] children;
+  mapping(uint256 => Child) public children;
+  uint256 public childrenLength = 0;
   Perk[] perks;
   mapping(uint256 => Task) public tasks;
   uint256 public tasksLength = 0;
@@ -98,8 +100,17 @@ contract KiddoPerks is Ownable {
    */
   function addChild(string memory name, address childAddr) public onlyOwner {
     Child memory newChild = Child(name, childAddr);
-    children.push(newChild);
+    children[childrenLength] = newChild;
+    childrenLength++;
 
     emit ChildAdded(name, childAddr);
+  }
+
+  function removeChild(
+    uint256 id
+  ) public onlyOwner {
+    delete children[id];
+
+    emit ChildRemoved(id);
   }
 }
