@@ -12,11 +12,12 @@ contract DeployKiddoPerks is ScaffoldETHDeploy {
 
     KDOToken token = new KDOToken();
 
-    KiddoPerks kiddoPerks = new KiddoPerks(PARENT, token);
+    KiddoPerks kiddoPerks = new KiddoPerks(token);
     console.logString(
       string.concat(
         "KiddoPerks deployed at: ", vm.toString(address(kiddoPerks))
       )
     );
+    kiddoPerks.setParent(PARENT);
   }
 }
