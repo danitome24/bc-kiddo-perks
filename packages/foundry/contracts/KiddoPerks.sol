@@ -9,6 +9,7 @@ contract KiddoPerks is Ownable {
   event TaskCompleted(string title, address by);
   event PerkCreated(string title, uint256 tokensRequired);
   event ChildAdded(string name, address childAddr);
+  event ParentUpdated(address newParentAddress);
 
   IERC20 token;
   address public parent;
@@ -33,9 +34,25 @@ contract KiddoPerks is Ownable {
     address childAddr;
   }
 
-  constructor(address _parent, IERC20 _token) Ownable(_parent) {
-    parent = _parent;
+  constructor(
+    IERC20 _token
+  ) Ownable(msg.sender) {
+    setParent(msg.sender);
     token = _token;
+  }
+
+  /**
+   * Set parent management address
+   *
+   * @param newParentAddress New parent address
+   */
+  function setParent(
+    address newParentAddress
+  ) public onlyOwner {
+    parent = newParentAddress;
+    transferOwnership(newParentAddress);
+
+    emit ParentUpdated(newParentAddress);
   }
 
   /**
