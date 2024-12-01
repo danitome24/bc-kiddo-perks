@@ -46,12 +46,12 @@ const ChildPage: NextPage = () => {
         functionName: "addChild",
         args: [newChild.name, "0x27dBc64e6C38633eD526d970258372476BCE58C0" as `0x${string}`],
       });
+
+      setChildren([...children, { ...newChild, id: children.length + 1, tokens: 0 }]);
+      setNewChild({ id: 0, name: "", avatar: "", tokens: 0 });
     } catch (e) {
       console.error("Error adding new child: ", e);
     }
-
-    setChildren([...children, { ...newChild, id: children.length + 1, tokens: 0 }]);
-    setNewChild({ id: 0, name: "", avatar: "", tokens: 0 });
   };
 
   const handleDeleteChild = (id: number) => {
