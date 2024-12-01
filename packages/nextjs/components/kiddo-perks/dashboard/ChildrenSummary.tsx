@@ -20,7 +20,7 @@ export const ChildrenSummary = () => {
         <div className="grid grid-cols-1 gap-4">
           <div className="flex flex-col justify-center items-center bg-primary rounded-xl py-4 px-8">
             <p className="text-center  w-full h-full">Add a child</p>
-            <Link className="btn-sm btn btn-success" href="/childs">
+            <Link className="btn-sm btn btn-success" href="/children">
               Go
             </Link>
           </div>

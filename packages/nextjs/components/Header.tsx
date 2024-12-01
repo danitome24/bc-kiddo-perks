@@ -23,8 +23,8 @@ export const menuLinks: HeaderMenuLink[] = [
     visibleTo: "both",
   },
   {
-    label: "Childs",
-    href: "/childs",
+    label: "Children",
+    href: "/children",
     visibleTo: "parent",
   },
   {
