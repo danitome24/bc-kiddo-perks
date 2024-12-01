@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Perk } from "~~/types/kiddoPerks";
 
@@ -10,7 +11,21 @@ export const PerksSummary = () => {
   if (perks == undefined) {
     return <section>Loading...</section>;
   }
-  console.log(perks);
+
+  if (perks.length === 0) {
+    return (
+      <div>
+        <h2 className="text-lg font-semibold mb-4">Available perks</h2>
+        <div className="flex flex-col justify-center items-center bg-secondary rounded-xl py-4 px-8">
+          <p className="text-center  w-full h-full">Add a perk</p>
+          <Link className="btn-sm btn btn-success" href="/perks">
+            Go
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2 className="text-lg font-semibold mb-4">Available perks</h2>
