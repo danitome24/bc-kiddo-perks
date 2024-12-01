@@ -1,8 +1,30 @@
+import { useEffect, useState } from "react";
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
-import { mockPerks, mockTasks } from "~~/app/data/mockData";
+import { mockTasks } from "~~/app/data/mockData";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { Perk } from "~~/types/kiddoPerks";
 
 export const ChildDashboard = () => {
-  const currentTokens = 120;
+  const currentTokens = 120 * 10 ** 18;
+  const [perks, setPerks] = useState<Perk[]>([]);
+
+  const { data: currentPerks } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllPerks",
+  });
+
+  useEffect(() => {
+    if (currentPerks != undefined) {
+      const perks = currentPerks.map((perk, i) => {
+        return {
+          id: i,
+          title: perk.title,
+          tokensRequired: BigInt(perk.tokensRequired),
+        };
+      });
+      setPerks([...perks]);
+    }
+  }, [currentPerks]);
 
   return (
     <div className="p-6 min-h-screen">
@@ -10,7 +32,8 @@ export const ChildDashboard = () => {
         title="Welcome, Sofia!"
         subtitle={
           <>
-            You have <span className="text-secondary font-semibold text-2xl">{currentTokens} tokens</span> to spend!
+            You have <span className="text-secondary font-semibold text-2xl">{currentTokens / 10 ** 18} tokens</span> to
+            spend!
           </>
         }
       />
@@ -23,7 +46,7 @@ export const ChildDashboard = () => {
 
       <TasksList tasks={mockTasks} />
 
-      <PerksListGrid perks={mockPerks} childTokens={currentTokens} />
+      <PerksListGrid perks={perks} childTokens={currentTokens} />
     </div>
   );
 };

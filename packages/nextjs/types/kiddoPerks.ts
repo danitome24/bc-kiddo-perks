@@ -9,8 +9,8 @@ export type Child = {
 
 export type Perk = {
   id: number;
-  name: string;
-  cost: number;
+  title: string;
+  tokensRequired: bigint;
   redeemedBy?: string[];
 };
 

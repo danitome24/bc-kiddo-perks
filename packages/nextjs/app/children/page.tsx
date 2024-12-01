@@ -29,7 +29,6 @@ const ChildPage: NextPage = () => {
   useEffect(() => {
     if (Array.isArray(currentChildren)) {
       const parsedCurrentChildren = currentChildren.map((child, i) => {
-        console.log(child);
         return {
           id: i,
           name: child.name,

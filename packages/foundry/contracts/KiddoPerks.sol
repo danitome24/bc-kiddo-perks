@@ -16,7 +16,7 @@ contract KiddoPerks is Ownable {
   address public parent;
   mapping(uint256 => Child) public children;
   uint256 public childrenLength = 0;
-  Perk[] perks;
+  Perk[] public perks;
   mapping(uint256 => Task) public tasks;
   uint256 public tasksLength = 0;
   mapping(uint256 => mapping(address => bool)) public completedTasksByUser;
@@ -93,6 +93,10 @@ contract KiddoPerks is Ownable {
     Perk memory newPerk = Perk(title, tokensRequired);
     perks.push(newPerk);
     emit PerkCreated(title, tokensRequired);
+  }
+
+  function getAllPerks() public view returns (Perk[] memory) {
+    return perks;
   }
 
   /**

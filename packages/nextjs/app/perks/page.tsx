@@ -1,27 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { mockPerks } from "../data/mockData";
+import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { PerkCard } from "~~/components/kiddo-perks";
 import { IntegerInput } from "~~/components/scaffold-eth";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Perk } from "~~/types/kiddoPerks";
 
 const PerksPage: NextPage = () => {
   const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
-  const [perks, setPerks] = useState<Perk[]>(mockPerks);
-  const [newPerk, setNewPerk] = useState({ name: "", cost: 0 });
+  const [perks, setPerks] = useState<Perk[]>([]);
+  const [newPerk, setNewPerk] = useState({ title: "", tokensRequired: BigInt(0) });
 
+  // Data Fetching
+  const { data: currentPerks } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllPerks",
+  });
+
+  useEffect(() => {
+    if (currentPerks != undefined) {
+      const fetchedPerks = currentPerks.map((perk, i) => {
+        return {
+          id: i, // Provisional
+          title: perk.title,
+          tokensRequired: perk.tokensRequired,
+        } as Perk;
+      });
+      setPerks([...fetchedPerks]);
+    }
+  }, [currentPerks]);
+
+  // Handle data
   const handleAddPerk = async () => {
-    if (!newPerk.name || newPerk.cost <= 0) return;
+    if (!newPerk.title || newPerk.tokensRequired <= 0) return;
     try {
       await writeKiddoPerksContract({
-        functionName: "createTask",
-        args: [newPerk.name, BigInt(newPerk.cost)],
+        functionName: "createPerk",
+        args: [newPerk.title, BigInt(newPerk.tokensRequired)],
       });
-      setPerks([...perks, { id: perks.length + 1, name: newPerk.name, cost: newPerk.cost }]);
-      setNewPerk({ name: "", cost: 0 });
+      setPerks([
+        ...perks,
+        { id: perks.length + 1, title: newPerk.title, tokensRequired: BigInt(newPerk.tokensRequired) },
+      ]);
+      setNewPerk({ title: "", tokensRequired: BigInt(0) });
     } catch (e) {
       console.error("Error creating new Perk");
     }
@@ -59,19 +81,19 @@ const PerksPage: NextPage = () => {
                 <input
                   type="text"
                   placeholder="Perk description"
-                  value={newPerk.name}
-                  onChange={e => setNewPerk({ ...newPerk, name: e.target.value })}
+                  value={newPerk.title}
+                  onChange={e => setNewPerk({ ...newPerk, title: e.target.value })}
                   className="input input-bordered w-full max-w-xs bg-transparent"
                 />
               </label>
               <label className="form-control w-full max-w-xs">
                 <div className="label">
-                  <span className="label-text">Cost</span>
+                  <span className="label-text">Cost (Pay attention at decimals)</span>
                 </div>
 
                 <IntegerInput
-                  value={BigInt(newPerk.cost)}
-                  onChange={updatedCost => setNewPerk({ ...newPerk, cost: Number(updatedCost) })}
+                  value={BigInt(newPerk.tokensRequired)}
+                  onChange={updatedCost => setNewPerk({ ...newPerk, tokensRequired: BigInt(updatedCost) })}
                 />
               </label>
               <button onClick={handleAddPerk} className="btn btn-success">
