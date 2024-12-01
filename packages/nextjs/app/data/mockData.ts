@@ -1,4 +1,4 @@
-import { Activity, Task } from "~~/types/kiddoPerks";
+import { Activity } from "~~/types/kiddoPerks";
 
 // const mockChildrenData: Child[] = [
 //   {
@@ -42,17 +42,17 @@ import { Activity, Task } from "~~/types/kiddoPerks";
 //   { id: 4, name: "Get a new toy", cost: 200 },
 // ];
 
-const mockTasks: Task[] = [
-  { id: 1, description: "Make your bed", status: "Pending" },
-  { id: 2, description: "Do your homework", status: "Pending" },
-  { id: 3, description: "Feed the pets", status: "Pending" },
-  { id: 4, description: "Help with dinner", status: "Pending" },
-];
+// const mockTasks: Task[] = [
+//   { id: 1, description: "Make your bed", status: "Pending" },
+//   { id: 2, description: "Do your homework", status: "Pending" },
+//   { id: 3, description: "Feed the pets", status: "Pending" },
+//   { id: 4, description: "Help with dinner", status: "Pending" },
+// ];
 
 const mockTasksHistory: Activity[] = [
-  { id: 1, description: "Make your bed: Completed by Sofia." },
-  { id: 2, description: "Edwin redeemed:1 extra hour of TV time." },
-  { id: 3, description: "New Task created: Help with dinner" },
+  { id: 1, title: "Make your bed: Completed by Sofia." },
+  { id: 2, title: "Edwin redeemed:1 extra hour of TV time." },
+  { id: 3, title: "New Task created: Help with dinner" },
 ];
 
-export { mockTasks, mockTasksHistory };
+export { mockTasksHistory };

@@ -83,6 +83,16 @@ contract KiddoPerks is Ownable {
     return completedTasksByUser[taskId][by];
   }
 
+  function getAllTasks() public view returns (Task[] memory) {
+    Task[] memory allTasks = new Task[](tasksLength);
+
+    for (uint256 i = 0; i < tasksLength; i++) {
+      allTasks[i] = tasks[i];
+    }
+
+    return allTasks;
+  }
+
   /**
    * Perks
    */

@@ -16,11 +16,11 @@ export type Perk = {
 
 export type Task = {
   id: number;
-  description: string;
+  title: string;
   status?: string;
 };
 
 export type Activity = {
   id: number;
-  description: string;
+  title: string;
 };

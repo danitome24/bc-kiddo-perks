@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
-import { mockTasks } from "~~/app/data/mockData";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Perk } from "~~/types/kiddoPerks";
 
@@ -44,7 +43,7 @@ export const ChildDashboard = () => {
         <TokensBalance tokens={currentTokens} />
       </div>
 
-      <TasksList tasks={mockTasks} />
+      <TasksList />
 
       <PerksListGrid perks={perks} childTokens={currentTokens} />
     </div>

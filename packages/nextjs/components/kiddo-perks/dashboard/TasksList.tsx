@@ -1,10 +1,28 @@
+import { useEffect, useState } from "react";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Task } from "~~/types/kiddoPerks";
 
-type TasksListProps = {
-  tasks: Task[];
-};
+export const TasksList = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-export const TasksList = ({ tasks }: TasksListProps) => {
+  const { data: currentTasks } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllTasks",
+  });
+
+  useEffect(() => {
+    if (currentTasks != undefined) {
+      const tasks = currentTasks.map((perk, i) => {
+        return {
+          id: i,
+          title: perk.title,
+          status: "Pending",
+        };
+      });
+      setTasks([...tasks]);
+    }
+  }, [currentTasks]);
+
   return (
     <section className="mt-6">
       <h2 className="text-xl font-semibold mb-4">Your Tasks</h2>
@@ -12,7 +30,7 @@ export const TasksList = ({ tasks }: TasksListProps) => {
         {tasks.map(task => (
           <div key={task.id} className="p-4 flex justify-between items-center">
             <div>
-              <h3 className="text-lg font-medium">{task.description}</h3>
+              <h3 className="text-lg font-medium">{task.title}</h3>
               <p className={`text-sm font-semibold ${task.status === "Pending" ? "text-warning" : "text-success"}`}>
                 {task.status}
               </p>

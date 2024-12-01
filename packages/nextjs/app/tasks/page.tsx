@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { mockTasks } from "../data/mockData";
 import { NextPage } from "next";
 import { CrossButton } from "~~/components/kiddo-perks";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Child, Task } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
-  const [newTask, setNewTask] = useState({ description: "" });
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [newTask, setNewTask] = useState({ title: "" });
 
   const { data: children } = useScaffoldReadContract({
     contractName: "KiddoPerks",
@@ -17,9 +16,9 @@ const TasksPage: NextPage = () => {
   }) as { data: Child[] | undefined };
 
   const handleAddTask = () => {
-    if (!newTask.description) return;
-    setTasks([...tasks, { id: tasks.length + 1, description: newTask.description }]);
-    setNewTask({ description: "" });
+    if (!newTask.title) return;
+    setTasks([...tasks, { id: tasks.length + 1, title: newTask.title }]);
+    setNewTask({ title: "" });
   };
 
   const handleDeleteTask = (id: number) => {
@@ -44,7 +43,7 @@ const TasksPage: NextPage = () => {
                   className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between"
                 >
                   <div className="flex flex-row justify-between">
-                    <h3 className="text-normal font-medium content-center">{task.description}</h3>
+                    <h3 className="text-normal font-medium content-center">{task.title}</h3>
                     <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
                   </div>
                   <div className="">
@@ -77,8 +76,8 @@ const TasksPage: NextPage = () => {
                 <input
                   type="text"
                   placeholder="Task description"
-                  value={newTask.description}
-                  onChange={e => setNewTask({ ...newTask, description: e.target.value })}
+                  value={newTask.title}
+                  onChange={e => setNewTask({ ...newTask, title: e.target.value })}
                   className="input input-bordered w-full max-w-xs bg-transparent"
                 />
               </label>
