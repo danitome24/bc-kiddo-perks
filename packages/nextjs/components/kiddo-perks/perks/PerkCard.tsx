@@ -14,7 +14,7 @@ export const PerkCard = ({ perk, onDelete }: PerkCardProps) => {
           <CrossButton onClickEvent={() => onDelete(perk.id)}></CrossButton>
         </div>
         <h3 className="text-lg font-medium">{perk.name}</h3>
-        <p className="text-sm m-0">Cost: {perk.cost} points</p>
+        <p className="text-sm m-0">Cost: {perk.cost} KDO</p>
       </div>
     </div>
   );

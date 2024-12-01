@@ -4,17 +4,27 @@ import { useState } from "react";
 import { mockPerks } from "../data/mockData";
 import { NextPage } from "next";
 import { PerkCard } from "~~/components/kiddo-perks";
+import { IntegerInput } from "~~/components/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Perk } from "~~/types/kiddoPerks";
 
 const PerksPage: NextPage = () => {
+  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
   const [perks, setPerks] = useState<Perk[]>(mockPerks);
-
   const [newPerk, setNewPerk] = useState({ name: "", cost: 0 });
 
-  const handleAddPerk = () => {
+  const handleAddPerk = async () => {
     if (!newPerk.name || newPerk.cost <= 0) return;
-    setPerks([...perks, { id: perks.length + 1, name: newPerk.name, cost: newPerk.cost }]);
-    setNewPerk({ name: "", cost: 0 });
+    try {
+      await writeKiddoPerksContract({
+        functionName: "createTask",
+        args: [newPerk.name, BigInt(newPerk.cost)],
+      });
+      setPerks([...perks, { id: perks.length + 1, name: newPerk.name, cost: newPerk.cost }]);
+      setNewPerk({ name: "", cost: 0 });
+    } catch (e) {
+      console.error("Error creating new Perk");
+    }
   };
 
   const handleDeletePerk = (id: number) => {
@@ -59,12 +69,9 @@ const PerksPage: NextPage = () => {
                   <span className="label-text">Cost</span>
                 </div>
 
-                <input
-                  type="number"
-                  placeholder="KDP tokens required"
-                  value={newPerk.cost}
-                  onChange={e => setNewPerk({ ...newPerk, cost: Number(e.target.value) })}
-                  className="input input-bordered w-full max-w-xs bg-transparent"
+                <IntegerInput
+                  value={BigInt(newPerk.cost)}
+                  onChange={updatedCost => setNewPerk({ ...newPerk, cost: Number(updatedCost) })}
                 />
               </label>
               <button onClick={handleAddPerk} className="btn btn-success">
