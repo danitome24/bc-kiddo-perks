@@ -57,8 +57,16 @@ const ChildPage: NextPage = () => {
     }
   };
 
-  const handleDeleteChild = (id: number) => {
-    setChildren(children.filter(child => child.id !== id));
+  const handleDeleteChild = async (id: number) => {
+    try {
+      await writeKiddoPerksContract({
+        functionName: "removeChild",
+        args: [BigInt(id)],
+      });
+      setChildren(children.filter(child => child.id !== id));
+    } catch (e) {
+      console.error("Error removing a child: ", e);
+    }
   };
 
   return (
