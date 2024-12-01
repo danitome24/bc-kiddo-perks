@@ -1,11 +1,17 @@
 import { ChildSummaryCard } from "./ChildSummaryCard";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
-type ChildrenSummaryProps = {
-  childrenData: Child[];
-};
+export const ChildrenSummary = () => {
+  const { data: childrenData } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllChildren",
+  }) as { data: Child[] | undefined };
 
-export const ChildrenSummary = ({ childrenData }: ChildrenSummaryProps) => {
+  if (childrenData == undefined) {
+    return <section>Loading...</section>;
+  }
+
   return (
     <section className="">
       <h2 className="text-lg font-semibold text-primary-content mb-4">Children Status</h2>
