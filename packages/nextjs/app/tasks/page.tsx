@@ -1,15 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { mockChildrenData, mockTasks } from "../data/mockData";
+import { mockTasks } from "../data/mockData";
 import { NextPage } from "next";
 import { CrossButton } from "~~/components/kiddo-perks";
-import { Task } from "~~/types/kiddoPerks";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { Child, Task } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
   const [tasks, setTasks] = useState<Task[]>(mockTasks);
-
   const [newTask, setNewTask] = useState({ description: "" });
+
+  const { data: children } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllChildren",
+  }) as { data: Child[] | undefined };
 
   const handleAddTask = () => {
     if (!newTask.description) return;
@@ -51,9 +56,7 @@ const TasksPage: NextPage = () => {
                         <option disabled selected>
                           Pick one
                         </option>
-                        {mockChildrenData.map(child => (
-                          <option key={child.id}>{child.name}</option>
-                        ))}
+                        {children && children.map(child => <option key={child.id}>{child.name}</option>)}
                       </select>
                     </label>
                     <div className="mt-5">
