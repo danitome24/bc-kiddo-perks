@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { NextPage } from "next";
 import { CrossButton } from "~~/components/kiddo-perks";
+import { Address, AddressInput } from "~~/components/scaffold-eth";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
@@ -15,6 +16,7 @@ const ChildPage: NextPage = () => {
   const [newChild, setNewChild] = useState<Child>({
     id: 0,
     name: "",
+    address: "0x0",
     avatar: "",
     tokens: 0,
   });
@@ -31,6 +33,7 @@ const ChildPage: NextPage = () => {
         return {
           id: i,
           name: child.name,
+          address: child.childAddr,
           avatar: "",
           tokens: 0,
         };
@@ -44,11 +47,11 @@ const ChildPage: NextPage = () => {
     try {
       await writeKiddoPerksContract({
         functionName: "addChild",
-        args: [newChild.name, "0x27dBc64e6C38633eD526d970258372476BCE58C0" as `0x${string}`],
+        args: [newChild.name, newChild.address as `0x${string}`],
       });
 
       setChildren([...children, { ...newChild, id: children.length + 1, tokens: 0 }]);
-      setNewChild({ id: 0, name: "", avatar: "", tokens: 0 });
+      setNewChild({ id: 0, name: "", address: "0x0", avatar: "", tokens: 0 });
     } catch (e) {
       console.error("Error adding new child: ", e);
     }
@@ -81,7 +84,8 @@ const ChildPage: NextPage = () => {
                   />
                   <div className="flex flex-col">
                     <h3 className="text-lg font-bold ">{child.name}</h3>
-                    <p className="text-sm ">KDP: {child.tokens}</p>
+                    <p className="text-sm m-0">KDP: {child.tokens}</p>
+                    <Address format="short" size="xs" address={child.address}></Address>
                   </div>
                   <div className="ml-auto">
                     <CrossButton onClickEvent={() => handleDeleteChild(child.id)}></CrossButton>
@@ -113,6 +117,23 @@ const ChildPage: NextPage = () => {
                     value={newChild.name}
                     onChange={e => setNewChild({ ...newChild, name: e.target.value })}
                   />
+                </label>
+                <label className="form-control w-full max-w-xs">
+                  <div className="label">
+                    <span className="label-text">Child address</span>
+                  </div>
+                  <AddressInput
+                    value={newChild.address}
+                    onChange={newValue => setNewChild({ ...newChild, address: newValue as `0x${string}` })}
+                  />
+                  {/* <input
+                    type="text"
+                    id="name"
+                    placeholder="Type here"
+                    className="input input-bordered w-full max-w-xs bg-transparent"
+                    value={newChild.name}
+                    onChange={e => setNewChild({ ...newChild, name: e.target.value })}
+                  /> */}
                 </label>
               </div>
               <button type="submit" className="btn btn-success">

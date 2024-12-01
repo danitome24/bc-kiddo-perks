@@ -1,6 +1,7 @@
 export type Child = {
   id: number;
   name: string;
+  address: `0x${string}`;
   avatar: string;
   tokens: number;
   progress?: { completed: number; total: number };
