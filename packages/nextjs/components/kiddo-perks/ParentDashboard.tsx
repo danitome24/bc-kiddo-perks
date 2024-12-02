@@ -1,8 +1,8 @@
 import { ChildrenSummary, ContentHeader, PerksSummary, RecentActivitySummary } from "./";
-import { Task } from "~~/types/kiddoPerks";
+import { Activity } from "~~/types/kiddoPerks";
 
 type DashboardProps = {
-  activities: Task[];
+  activities: Activity[];
 };
 
 export const ParentDashboard = ({ activities }: DashboardProps) => {

@@ -17,6 +17,7 @@ export type Perk = {
 export type Task = {
   id: number;
   title: string;
+  tokensReward: bigint;
   status?: string;
 };
 

@@ -1,24 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { CrossButton } from "~~/components/kiddo-perks";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { IntegerInput } from "~~/components/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Child, Task } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTask, setNewTask] = useState({ title: "" });
+  const [newTask, setNewTask] = useState({ title: "", tokensReward: BigInt(0) });
+
+  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
 
   const { data: children } = useScaffoldReadContract({
     contractName: "KiddoPerks",
     functionName: "getAllChildren",
   }) as { data: Child[] | undefined };
 
-  const handleAddTask = () => {
+  const { data: currentTasks } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllTasks",
+  });
+
+  useEffect(() => {
+    if (currentTasks != undefined) {
+      const formattedTasks = currentTasks.map((task, i) => {
+        return {
+          id: i,
+          title: task.title,
+          tokensReward: task.tokensReward,
+        };
+      });
+
+      setTasks([...formattedTasks]);
+    }
+  }, [currentTasks]);
+
+  const handleAddTask = async () => {
     if (!newTask.title) return;
-    setTasks([...tasks, { id: tasks.length + 1, title: newTask.title }]);
-    setNewTask({ title: "" });
+    try {
+      await writeKiddoPerksContract({
+        functionName: "createTask",
+        args: [newTask.title, newTask.tokensReward],
+      });
+      setTasks([...tasks, { id: tasks.length + 1, title: newTask.title, tokensReward: newTask.tokensReward }]);
+      setNewTask({ title: "", tokensReward: BigInt(0) });
+    } catch (e) {
+      console.error("Error on adding new task:", e);
+    }
   };
 
   const handleDeleteTask = (id: number) => {
@@ -54,6 +84,12 @@ const TasksPage: NextPage = () => {
                       <h3 className="text-normal font-medium content-center">{task.title}</h3>
                       <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
                     </div>
+                    <div className="flex flex-row">
+                      <p className="text-sm m-0">
+                        Tokens reward: <span className="font-bold text-lg">{Number(task.tokensReward) / 10 ** 18}</span>{" "}
+                        KDO
+                      </p>
+                    </div>
                     <div className="">
                       <label className="form-control w-full max-w-xs">
                         <div className="label">
@@ -88,6 +124,15 @@ const TasksPage: NextPage = () => {
                   value={newTask.title}
                   onChange={e => setNewTask({ ...newTask, title: e.target.value })}
                   className="input input-bordered w-full max-w-xs bg-transparent"
+                />
+              </label>
+              <label className="form-control w-full max-w-xs">
+                <div className="label">
+                  <span className="label-text">Tokens reward</span>
+                </div>
+                <IntegerInput
+                  value={newTask.tokensReward}
+                  onChange={newTokensReward => setNewTask({ ...newTask, tokensReward: BigInt(newTokensReward) })}
                 />
               </label>
               <button onClick={handleAddTask} className="btn btn-success">

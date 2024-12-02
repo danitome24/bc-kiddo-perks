@@ -12,10 +12,11 @@ export const TasksList = () => {
 
   useEffect(() => {
     if (currentTasks != undefined) {
-      const tasks = currentTasks.map((perk, i) => {
+      const tasks = currentTasks.map((task, i) => {
         return {
           id: i,
-          title: perk.title,
+          title: task.title,
+          tokensReward: task.tokensReward,
           status: "Pending",
         };
       });
