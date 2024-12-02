@@ -36,35 +36,44 @@ const TasksPage: NextPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <section className="lg:col-span-2">
             <h2 className="text-lg font-semibold mb-4">Current Tasks</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {tasks.map(task => (
-                <div
-                  key={task.id}
-                  className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between"
-                >
-                  <div className="flex flex-row justify-between">
-                    <h3 className="text-normal font-medium content-center">{task.title}</h3>
-                    <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
-                  </div>
-                  <div className="">
-                    <label className="form-control w-full max-w-xs">
-                      <div className="label">
-                        <span className="label-text">Who completed the task?</span>
+            {tasks.length == 0 && (
+              <div className="grid grid-cols-1">
+                <div className="bg-secondary shadow-md rounded-lg text-center p-4">
+                  <p>Add your first task!</p>
+                </div>
+              </div>
+            )}
+            {tasks.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {tasks.map(task => (
+                  <div
+                    key={task.id}
+                    className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between"
+                  >
+                    <div className="flex flex-row justify-between">
+                      <h3 className="text-normal font-medium content-center">{task.title}</h3>
+                      <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
+                    </div>
+                    <div className="">
+                      <label className="form-control w-full max-w-xs">
+                        <div className="label">
+                          <span className="label-text">Who completed the task?</span>
+                        </div>
+                        <select className="bg-secondary select select-bordered">
+                          <option disabled selected>
+                            Pick one
+                          </option>
+                          {children && children.map(child => <option key={child.id}>{child.name}</option>)}
+                        </select>
+                      </label>
+                      <div className="mt-5">
+                        <button className="btn btn-primary">Completed by</button>
                       </div>
-                      <select className="bg-secondary select select-bordered">
-                        <option disabled selected>
-                          Pick one
-                        </option>
-                        {children && children.map(child => <option key={child.id}>{child.name}</option>)}
-                      </select>
-                    </label>
-                    <div className="mt-5">
-                      <button className="btn btn-primary">Complete by</button>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
           <section>
             <h2 className="text-lg font-semibold mb-4">Add New Task</h2>
