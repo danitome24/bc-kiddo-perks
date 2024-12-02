@@ -4,6 +4,8 @@ type TasksProgressProps = {
 };
 
 export const TasksProgress = ({ completed, pending }: TasksProgressProps) => {
+  const progressInPercentage = (completed / (completed + pending)) * 100;
+
   return (
     <section className="bg-primary shadow-md rounded-lg p-4">
       <h2 className="text-lg font-semibold mb-4">Your Progress</h2>
@@ -18,7 +20,7 @@ export const TasksProgress = ({ completed, pending }: TasksProgressProps) => {
         </div>
       </div>
       <div className="mt-4 bg-gray-100 rounded-full h-4">
-        <div className="bg-green-500 h-4 rounded-full" style={{ width: "60%" }}></div>
+        <div className="bg-green-500 h-4 rounded-full" style={{ width: progressInPercentage + "%" }}></div>
       </div>
     </section>
   );
