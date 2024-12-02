@@ -64,11 +64,19 @@ const PerksPage: NextPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <section className="lg:col-span-2">
             <h2 className="text-lg font-semibold mb-4">Current Perks</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {perks.map(perk => (
-                <PerkCard key={perk.id} onDelete={handleDeletePerk} perk={perk} />
-              ))}
-            </div>
+            {perks.length == 0 && (
+              <div className="grid grid-cols-1 bg-secondary rounded-lg p-4 text-center">
+                <p>Add your first perk!</p>
+              </div>
+            )}
+
+            {perks.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {perks.map(perk => (
+                  <PerkCard key={perk.id} onDelete={handleDeletePerk} perk={perk} />
+                ))}
+              </div>
+            )}
           </section>
 
           <section>
