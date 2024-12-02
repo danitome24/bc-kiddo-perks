@@ -79,27 +79,34 @@ const ChildPage: NextPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <section className="lg:col-span-2">
             <h2 className="text-lg font-semibold mb-4">Current Children</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {children.map(child => (
-                <div key={child.id} className="bg-secondary shadow-md rounded-lg p-4 flex items-start gap-4">
-                  <Image
-                    className="w-16 h-16 rounded-full"
-                    width={36}
-                    height={36}
-                    src={"/childAvatar.png"}
-                    alt={child.name}
-                  />
-                  <div className="flex flex-col">
-                    <h3 className="text-lg font-bold ">{child.name}</h3>
-                    <p className="text-sm m-0">KDP: {child.tokens}</p>
-                    <Address format="short" size="xs" address={child.address}></Address>
+            {children.length === 0 && (
+              <div className="grid grid-cols-1">
+                <div className="bg-secondary shadow-md rounded-lg p-4 text-center gap-4">Add your first child</div>
+              </div>
+            )}
+            {children.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                {children.map(child => (
+                  <div key={child.id} className="bg-secondary shadow-md rounded-lg p-4 flex items-start gap-4">
+                    <Image
+                      className="w-16 h-16 rounded-full"
+                      width={36}
+                      height={36}
+                      src={"/childAvatar.png"}
+                      alt={child.name}
+                    />
+                    <div className="flex flex-col">
+                      <h3 className="text-lg font-bold ">{child.name}</h3>
+                      <p className="text-sm m-0">KDP: {child.tokens}</p>
+                      <Address format="short" size="xs" address={child.address}></Address>
+                    </div>
+                    <div className="ml-auto">
+                      <CrossButton onClickEvent={() => handleDeleteChild(child.id)}></CrossButton>
+                    </div>
                   </div>
-                  <div className="ml-auto">
-                    <CrossButton onClickEvent={() => handleDeleteChild(child.id)}></CrossButton>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
 
           <section>
