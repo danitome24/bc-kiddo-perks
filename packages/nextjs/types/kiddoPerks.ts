@@ -3,7 +3,7 @@ export type Child = {
   name: string;
   address: `0x${string}`;
   avatar: string;
-  tokens: number;
+  tokens: bigint;
   progress?: { completed: number; total: number };
 };
 

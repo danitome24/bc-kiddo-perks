@@ -18,7 +18,7 @@ const ChildPage: NextPage = () => {
     name: "",
     address: "0x0",
     avatar: "",
-    tokens: 0,
+    tokens: BigInt(0),
   });
 
   const { data: currentChildren } = useScaffoldReadContract({
@@ -34,7 +34,7 @@ const ChildPage: NextPage = () => {
           name: child.name,
           address: child.childAddr,
           avatar: "",
-          tokens: 0,
+          tokens: BigInt(0),
         };
       });
       setChildren([...parsedCurrentChildren]);
@@ -49,8 +49,8 @@ const ChildPage: NextPage = () => {
         args: [newChild.name, newChild.address as `0x${string}`],
       });
 
-      setChildren([...children, { ...newChild, id: children.length + 1, tokens: 0 }]);
-      setNewChild({ id: 0, name: "", address: "0x0", avatar: "", tokens: 0 });
+      setChildren([...children, { ...newChild, id: children.length + 1, tokens: BigInt(0) }]);
+      setNewChild({ id: 0, name: "", address: "0x0", avatar: "", tokens: BigInt(0) });
     } catch (e) {
       console.error("Error adding new child: ", e);
     }

@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { NextPage } from "next";
-import { CrossButton } from "~~/components/kiddo-perks";
+import { TaskCard } from "~~/components/kiddo-perks/TaskCard";
 import { IntegerInput } from "~~/components/scaffold-eth";
+import { useFetchChildren } from "~~/hooks/kiddo-perks/useFetchChildren";
 import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Child, Task } from "~~/types/kiddoPerks";
+import { notification } from "~~/utils/scaffold-eth";
 
 const TasksPage: NextPage = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -13,10 +15,7 @@ const TasksPage: NextPage = () => {
 
   const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
 
-  const { data: children } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllChildren",
-  }) as { data: Child[] | undefined };
+  const childrenData = useFetchChildren();
 
   const { data: currentTasks } = useScaffoldReadContract({
     contractName: "KiddoPerks",
@@ -55,6 +54,18 @@ const TasksPage: NextPage = () => {
     setTasks(tasks.filter(task => task.id !== id));
   };
 
+  const handleCompleteTaskBy = async (taskId: number, by: Child) => {
+    try {
+      await writeKiddoPerksContract({
+        functionName: "completeTask",
+        args: [BigInt(taskId), by.address],
+      });
+      notification.success(`Task completed by: ${by.name}`);
+    } catch (e) {
+      console.error("Error on completing task: ", e);
+    }
+  };
+
   return (
     <div className="px-8 py-16 bg-primary-300 flex justify-center">
       <div className="items-center">
@@ -76,37 +87,13 @@ const TasksPage: NextPage = () => {
             {tasks.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {tasks.map(task => (
-                  <div
+                  <TaskCard
                     key={task.id}
-                    className="flex flex-col bg-secondary shadow-md rounded-lg p-4 gap-4 justify-between"
-                  >
-                    <div className="flex flex-row justify-between">
-                      <h3 className="text-normal font-medium content-center">{task.title}</h3>
-                      <CrossButton onClickEvent={() => handleDeleteTask(task.id)} />
-                    </div>
-                    <div className="flex flex-row">
-                      <p className="text-sm m-0">
-                        Tokens reward: <span className="font-bold text-lg">{Number(task.tokensReward) / 10 ** 18}</span>{" "}
-                        KDO
-                      </p>
-                    </div>
-                    <div className="">
-                      <label className="form-control w-full max-w-xs">
-                        <div className="label">
-                          <span className="label-text">Who completed the task?</span>
-                        </div>
-                        <select className="bg-secondary select select-bordered">
-                          <option disabled selected>
-                            Pick one
-                          </option>
-                          {children && children.map(child => <option key={child.id}>{child.name}</option>)}
-                        </select>
-                      </label>
-                      <div className="mt-5">
-                        <button className="btn btn-primary">Completed by</button>
-                      </div>
-                    </div>
-                  </div>
+                    task={task}
+                    childrenData={childrenData}
+                    onDelete={handleDeleteTask}
+                    onCompleteBy={handleCompleteTaskBy}
+                  />
                 ))}
               </div>
             )}
