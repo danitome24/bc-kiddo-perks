@@ -3,14 +3,16 @@ import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 export const ChildDashboard = () => {
   const currentTokens = 120 * 10 ** 18;
-  const completedTasks = 1;
+  const completedTasks = 3;
 
   const { data: totalTasks } = useScaffoldReadContract({
     contractName: "KiddoPerks",
     functionName: "tasksLength",
   });
 
-  const pendingTasks = Number(totalTasks) - completedTasks;
+  const tasks = Number(totalTasks) < completedTasks ? completedTasks : Number(totalTasks);
+
+  const pendingTasks = tasks - completedTasks;
 
   return (
     <div className="p-6 min-h-screen">
@@ -27,7 +29,7 @@ export const ChildDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TasksProgress completed={completedTasks} pending={pendingTasks} />
 
-        <TokensBalance tokens={currentTokens} />
+        <TokensBalance />
       </div>
 
       <TasksList />
