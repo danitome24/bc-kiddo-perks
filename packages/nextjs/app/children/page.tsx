@@ -144,14 +144,6 @@ const ChildPage: NextPage = () => {
                     value={newChild.address}
                     onChange={newValue => setNewChild({ ...newChild, address: newValue as `0x${string}` })}
                   />
-                  {/* <input
-                    type="text"
-                    id="name"
-                    placeholder="Type here"
-                    className="input input-bordered w-full max-w-xs bg-transparent"
-                    value={newChild.name}
-                    onChange={e => setNewChild({ ...newChild, name: e.target.value })}
-                  /> */}
                 </label>
               </div>
               <button type="submit" className="btn btn-success">
