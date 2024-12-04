@@ -44,10 +44,29 @@ contract KiddoPerksTest is Test {
     emit TaskCreated(taskName);
     kiddoPerks.createTask(taskName, 2 * 1e18);
 
-    (string memory title,) = kiddoPerks.tasks(0);
+    KiddoPerks.Task memory task = kiddoPerks.taskBy(0);
+    assertEq(kiddoPerks.s_taskNextId(), 1);
+    assertEq(kiddoPerks.s_activeTaskCount(), 1);
+    assertEq(task.title, task.title);
+  }
 
-    assertEq(kiddoPerks.tasksLength(), 1);
-    assertEq(title, taskName);
+  function testCanCreateMultipleTasks() public {
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit TaskCreated("Clean up room");
+    kiddoPerks.createTask("Clean up room", 2 * 1e18);
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit TaskCreated("Make bed");
+    kiddoPerks.createTask("Make bed", 2 * 1e18);
+
+    KiddoPerks.Task memory taskOne = kiddoPerks.taskBy(0);
+    KiddoPerks.Task memory taskTwo = kiddoPerks.taskBy(1);
+    assertEq(kiddoPerks.s_taskNextId(), 2);
+    assertEq(kiddoPerks.s_activeTaskCount(), 2);
+    assertEq(taskOne.title, "Clean up room");
+    assertEq(taskTwo.title, "Make bed");
   }
 
   function testOnlyParentCanMarkTaskAsCompleted() public withTaskCreated {
@@ -73,6 +92,32 @@ contract KiddoPerksTest is Test {
     assertTrue(isCompleted);
   }
 
+  function testRevertsIfCompletedTaskIdNotExists() public withTaskCreated {
+    uint256 taskId = 4;
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__TaskNotFound.selector, taskId
+      )
+    );
+    kiddoPerks.completeTask(taskId, CHILD_ONE);
+  }
+
+  function testRevertsIfCompleteARemovedTask() public withTaskCreated {
+    uint256 taskId = 0;
+
+    vm.prank(PARENT);
+    kiddoPerks.removeTask(taskId);
+
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__CannotCompleteRemovedTask.selector, taskId
+      )
+    );
+    kiddoPerks.completeTask(taskId, CHILD_ONE);
+  }
+
   function testOnlyParentCanCreatePerk() public withTaskCreated {
     vm.prank(CHILD_ONE);
     vm.expectRevert(
@@ -81,6 +126,57 @@ contract KiddoPerksTest is Test {
       )
     );
     kiddoPerks.createPerk("Disneyland", 2 * 1e18);
+  }
+
+  function testRevertsIfNoOwnerTriesToRemoveTask() public withTaskCreated {
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.removeTask(0);
+  }
+
+  function testRevertsIfTryingToRemoveANonExistingTask() public withTaskCreated {
+    uint256 id = 4;
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(KiddoPerks.KiddoPerks__NotValidId.selector, id)
+    );
+    kiddoPerks.removeTask(id);
+  }
+
+  event TaskRemoved(uint256 id);
+
+  function testRevertsIfTryToRemoveAnAlreadyRemovedTask()
+    public
+    withTaskCreated
+  {
+    uint256 id = 0;
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit TaskRemoved(id);
+    kiddoPerks.removeTask(id);
+
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__TaskAlreadyRemoved.selector, id
+      )
+    );
+    kiddoPerks.removeTask(id);
+  }
+
+  function testParentCanRemoveTask() public withTaskCreated {
+    uint256 id = 0;
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit TaskRemoved(id);
+    kiddoPerks.removeTask(id);
+
+    assertTrue(kiddoPerks.taskBy(id).removed);
+    assertEq(kiddoPerks.s_activeTaskCount(), 0);
   }
 
   event PerkCreated(string title, uint256 tokensRequired);

@@ -13,6 +13,11 @@ contract KiddoPerks is Ownable {
   event ParentUpdated(address newParentAddress);
   event TaskRemoved(uint256 id);
 
+  error KiddoPerks__NotValidId(uint256 id);
+  error KiddoPerks__TaskAlreadyRemoved(uint256 id);
+  error KiddoPerks__TaskNotFound(uint256 id);
+  error KiddoPerks__CannotCompleteRemovedTask(uint256 id);
+
   IERC20 token;
   address public parent;
 
@@ -21,15 +26,15 @@ contract KiddoPerks is Ownable {
 
   Perk[] public perks;
 
-  mapping(uint256 => Task) public tasks;
-  uint256[] s_tasksIds;
-  uint256 public tasksLength = 0;
-
-  mapping(uint256 => mapping(address => bool)) public completedTasksByUser;
+  mapping(uint256 => Task) public s_tasks;
+  uint256 public s_taskNextId = 0;
+  uint256 public s_activeTaskCount = 0;
+  mapping(uint256 => mapping(address => bool)) public s_completedTasksByUser;
 
   struct Task {
     string title;
     uint256 tokensReward;
+    bool removed;
   }
 
   struct Perk {
@@ -70,15 +75,27 @@ contract KiddoPerks is Ownable {
     string memory title,
     uint256 tokensReward
   ) public onlyOwner {
-    tasks[tasksLength] = Task(title, tokensReward);
-    s_tasksIds.push();
-    tasksLength++;
+    s_tasks[s_taskNextId] = Task(title, tokensReward, false);
+    s_taskNextId++;
+    s_activeTaskCount++;
     emit TaskCreated(title);
   }
 
+  function taskBy(
+    uint256 id
+  ) public view returns (Task memory) {
+    return s_tasks[id];
+  }
+
   function completeTask(uint256 taskId, address by) public onlyOwner {
-    completedTasksByUser[taskId][by] = true;
-    emit TaskCompleted(tasks[taskId].title, by);
+    if (taskId >= s_taskNextId) {
+      revert KiddoPerks__TaskNotFound(taskId);
+    }
+    if (s_tasks[taskId].removed) {
+      revert KiddoPerks__CannotCompleteRemovedTask(taskId);
+    }
+    s_completedTasksByUser[taskId][by] = true;
+    emit TaskCompleted(s_tasks[taskId].title, by);
 
     // TODO: reward
   }
@@ -86,8 +103,16 @@ contract KiddoPerks is Ownable {
   function removeTask(
     uint256 id
   ) public onlyOwner {
-    delete tasks[id];
-    tasksLength--;
+    if (id >= s_taskNextId) {
+      revert KiddoPerks__NotValidId(id);
+    }
+
+    if (s_tasks[id].removed) {
+      revert KiddoPerks__TaskAlreadyRemoved(id);
+    }
+
+    s_tasks[id].removed = true;
+    s_activeTaskCount--;
 
     emit TaskRemoved(id);
   }
@@ -96,14 +121,18 @@ contract KiddoPerks is Ownable {
     uint256 taskId,
     address by
   ) public view returns (bool) {
-    return completedTasksByUser[taskId][by];
+    return s_completedTasksByUser[taskId][by];
   }
 
   function getAllTasks() public view returns (Task[] memory) {
-    Task[] memory allTasks = new Task[](tasksLength);
+    Task[] memory allTasks = new Task[](s_activeTaskCount);
 
-    for (uint256 i = 0; i < tasksLength; i++) {
-      allTasks[i] = tasks[i];
+    uint256 index = 0;
+    for (uint256 i = 0; i < s_taskNextId; i++) {
+      if (!s_tasks[i].removed) {
+        allTasks[index] = s_tasks[i];
+        index++;
+      }
     }
 
     return allTasks;
