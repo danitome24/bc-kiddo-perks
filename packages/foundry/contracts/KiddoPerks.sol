@@ -12,12 +12,14 @@ contract KiddoPerks is Ownable {
   event ChildRemoved(uint256 id);
   event ParentUpdated(address newParentAddress);
   event TaskRemoved(uint256 id);
+  event PerkRemoved(uint256 id);
 
   error KiddoPerks__NotValidId(uint256 id);
   error KiddoPerks__TaskAlreadyRemoved(uint256 id);
   error KiddoPerks__TaskNotFound(uint256 id);
   error KiddoPerks__CannotCompleteRemovedTask(uint256 id);
   error KiddoPerks__ChildAlreadyRemoved(uint256 id);
+  error KiddoPerks__PerkAlreadyRemoved(uint256 id);
 
   IERC20 token;
   address public parent;
@@ -26,7 +28,9 @@ contract KiddoPerks is Ownable {
   uint256 public s_childrenNextId = 0;
   uint256 public s_activeChildren = 0;
 
-  Perk[] public perks;
+  mapping(uint256 => Perk) public s_perks;
+  uint256 public s_perksNextId = 0;
+  uint256 public s_activePerks = 0;
 
   mapping(uint256 => Task) public s_tasks;
   uint256 public s_taskNextId = 0;
@@ -41,8 +45,10 @@ contract KiddoPerks is Ownable {
   }
 
   struct Perk {
+    uint256 id;
     string title;
     uint256 tokensRequired;
+    bool removed;
   }
 
   struct Child {
@@ -150,13 +156,46 @@ contract KiddoPerks is Ownable {
     string memory title,
     uint256 tokensRequired
   ) public onlyOwner {
-    Perk memory newPerk = Perk(title, tokensRequired);
-    perks.push(newPerk);
+    Perk memory newPerk = Perk(s_perksNextId, title, tokensRequired, false);
+    s_perks[s_perksNextId] = newPerk;
+    s_activePerks++;
+    s_perksNextId++;
     emit PerkCreated(title, tokensRequired);
   }
 
+  function perkBy(
+    uint256 id
+  ) public view returns (Perk memory) {
+    return s_perks[id];
+  }
+
+  function removePerk(
+    uint256 id
+  ) public onlyOwner {
+    if (id >= s_perksNextId) {
+      revert KiddoPerks__NotValidId(id);
+    }
+    if (s_perks[id].removed) {
+      revert KiddoPerks__PerkAlreadyRemoved(id);
+    }
+
+    s_perks[id].removed = true;
+    s_activePerks--;
+
+    emit PerkRemoved(id);
+  }
+
   function getAllPerks() public view returns (Perk[] memory) {
-    return perks;
+    Perk[] memory allPerks = new Perk[](s_activePerks);
+
+    uint256 index;
+    for (uint256 i = 0; i < s_activePerks; i++) {
+      if (!s_perks[i].removed) {
+        allPerks[index] = s_perks[i];
+      }
+    }
+
+    return allPerks;
   }
 
   /**

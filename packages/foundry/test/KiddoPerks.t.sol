@@ -122,16 +122,6 @@ contract KiddoPerksTest is Test {
     kiddoPerks.completeTask(taskId, CHILD_ONE);
   }
 
-  function testOnlyParentCanCreatePerk() public withTaskCreated {
-    vm.prank(CHILD_ONE);
-    vm.expectRevert(
-      abi.encodeWithSelector(
-        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
-      )
-    );
-    kiddoPerks.createPerk("Disneyland", 2 * 1e18);
-  }
-
   function testRevertsIfNoOwnerTriesToRemoveTask() public withTaskCreated {
     vm.prank(CHILD_ONE);
     vm.expectRevert(
@@ -194,6 +184,74 @@ contract KiddoPerksTest is Test {
     vm.expectEmit(true, true, false, true);
     emit PerkCreated(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
     kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
+
+    assertEq(kiddoPerks.s_perksNextId(), 1);
+    assertEq(kiddoPerks.s_activePerks(), 1);
+  }
+
+  function testOnlyParentCanCreatePerk() public withTaskCreated {
+    string memory perkTitle = "Go to Disneyland Paris";
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
+  }
+
+  function testOnlyParentCanRemovePerk() public withPerkCreated {
+    uint256 perkId = 0;
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.removePerk(perkId);
+  }
+
+  function testRevertsIfTriesToRemoveNonExistingPerk() public withPerkCreated {
+    uint256 perkId = 5;
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(KiddoPerks.KiddoPerks__NotValidId.selector, perkId)
+    );
+    kiddoPerks.removePerk(perkId);
+  }
+
+  event PerkRemoved(uint256 id);
+
+  function testRevertsIfTriesToRemoveAnAlreadyRemovedPerk()
+    public
+    withPerkCreated
+  {
+    uint256 perkId = 0;
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit PerkRemoved(perkId);
+    kiddoPerks.removePerk(perkId);
+
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__PerkAlreadyRemoved.selector, perkId
+      )
+    );
+    kiddoPerks.removePerk(perkId);
+  }
+
+  function testParentCanRemovePerk() public withPerkCreated {
+    uint256 perkId = 0;
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit PerkRemoved(perkId);
+    kiddoPerks.removePerk(perkId);
+
+    assertTrue(kiddoPerks.perkBy(perkId).removed);
+    assertEq(kiddoPerks.s_activePerks(), 0);
   }
 
   /////////////////////
@@ -320,6 +378,13 @@ contract KiddoPerksTest is Test {
 
     vm.prank(PARENT);
     kiddoPerks.addChild(childName, CHILD_ONE);
+    _;
+  }
+
+  modifier withPerkCreated() {
+    string memory perkTitle = "Go to Disneyland Paris";
+    vm.prank(PARENT);
+    kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
     _;
   }
 }
