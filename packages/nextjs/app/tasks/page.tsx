@@ -4,14 +4,14 @@ import { useState } from "react";
 import { NextPage } from "next";
 import { TaskCard } from "~~/components/kiddo-perks/TaskCard";
 import { IntegerInput } from "~~/components/scaffold-eth";
-import { useFetchChildren } from "~~/hooks/kiddo-perks/useFetchChildren";
+import { useChildManager } from "~~/hooks/kiddo-perks/useChildManager";
 import { useTaskManager } from "~~/hooks/kiddo-perks/useTasksManager";
 import { Child } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
   const [newTask, setNewTask] = useState({ title: "", tokensReward: BigInt(0) });
 
-  const childrenData = useFetchChildren();
+  const { children } = useChildManager();
   const { tasks, addTask, removeTask, completeTaskBy } = useTaskManager();
 
   const handleAddTask = async () => {
@@ -64,7 +64,7 @@ const TasksPage: NextPage = () => {
                   <TaskCard
                     key={task.id}
                     task={task}
-                    childrenData={childrenData}
+                    childrenData={children}
                     onDelete={handleDeleteTask}
                     onCompleteBy={handleCompleteTaskBy}
                   />

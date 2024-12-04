@@ -1,18 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NextPage } from "next";
 import { ChildCard } from "~~/components/kiddo-perks/ChildCard";
 import { AddressInput } from "~~/components/scaffold-eth";
-import { useFetchChildren } from "~~/hooks/kiddo-perks/useFetchChildren";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useChildManager } from "~~/hooks/kiddo-perks/useChildManager";
 import { Child } from "~~/types/kiddoPerks";
 
 const ChildPage: NextPage = () => {
-  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
-
-  const [children, setChildren] = useState<Child[]>([]);
-
   const [newChild, setNewChild] = useState<Child>({
     id: 0,
     name: "",
@@ -21,21 +16,12 @@ const ChildPage: NextPage = () => {
     avatar: "",
   });
 
-  const childrenData = useFetchChildren();
-
-  useEffect(() => {
-    setChildren([...childrenData]);
-  }, [childrenData]);
+  const { children, addChild, removeChild } = useChildManager();
 
   const handleAddChild = async () => {
     if (!newChild.name) return;
     try {
-      await writeKiddoPerksContract({
-        functionName: "addChild",
-        args: [newChild.name, newChild.address as `0x${string}`],
-      });
-
-      setChildren([...children, { ...newChild, id: children.length + 1 }]);
+      await addChild(newChild.name, newChild.address);
       setNewChild({ id: 0, name: "", address: "0x0", removed: false, avatar: "" });
     } catch (e) {
       console.error("Error adding new child: ", e);
@@ -44,11 +30,7 @@ const ChildPage: NextPage = () => {
 
   const handleDeleteChild = async (id: number) => {
     try {
-      await writeKiddoPerksContract({
-        functionName: "removeChild",
-        args: [BigInt(id)],
-      });
-      setChildren(children.filter(child => child.id !== id));
+      removeChild(id);
     } catch (e) {
       console.error("Error removing a child: ", e);
     }
