@@ -2,6 +2,7 @@ export type Child = {
   id: number;
   name: string;
   address: `0x${string}`;
+  removed: boolean;
   avatar: string;
   tokens: bigint;
   progress?: { completed: number; total: number };
@@ -11,6 +12,7 @@ export type Perk = {
   id: number;
   title: string;
   tokensRequired: bigint;
+  removed: boolean;
   redeemedBy?: string[];
 };
 
@@ -18,6 +20,7 @@ export type Task = {
   id: number;
   title: string;
   tokensReward: bigint;
+  removed: boolean;
   status?: string;
 };
 

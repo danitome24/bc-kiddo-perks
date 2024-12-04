@@ -50,7 +50,6 @@ contract KiddoPerksTest is Test {
 
     KiddoPerks.Task memory task = kiddoPerks.taskBy(0);
     assertEq(kiddoPerks.s_taskNextId(), 1);
-    assertEq(kiddoPerks.s_activeTaskCount(), 1);
     assertEq(task.title, task.title);
   }
 
@@ -68,7 +67,6 @@ contract KiddoPerksTest is Test {
     KiddoPerks.Task memory taskOne = kiddoPerks.taskBy(0);
     KiddoPerks.Task memory taskTwo = kiddoPerks.taskBy(1);
     assertEq(kiddoPerks.s_taskNextId(), 2);
-    assertEq(kiddoPerks.s_activeTaskCount(), 2);
     assertEq(taskOne.title, "Clean up room");
     assertEq(taskTwo.title, "Make bed");
   }
@@ -170,7 +168,6 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removeTask(id);
 
     assertTrue(kiddoPerks.taskBy(id).removed);
-    assertEq(kiddoPerks.s_activeTaskCount(), 0);
   }
 
   /////////////////////
@@ -186,7 +183,6 @@ contract KiddoPerksTest is Test {
     kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
 
     assertEq(kiddoPerks.s_perksNextId(), 1);
-    assertEq(kiddoPerks.s_activePerks(), 1);
   }
 
   function testOnlyParentCanCreatePerk() public withTaskCreated {
@@ -251,7 +247,6 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removePerk(perkId);
 
     assertTrue(kiddoPerks.perkBy(perkId).removed);
-    assertEq(kiddoPerks.s_activePerks(), 0);
   }
 
   /////////////////////
@@ -277,7 +272,6 @@ contract KiddoPerksTest is Test {
     emit ChildAdded(childName, CHILD_ONE);
     kiddoPerks.addChild(childName, CHILD_ONE);
 
-    assertEq(kiddoPerks.s_activeChildren(), 1);
     assertEq(kiddoPerks.s_childrenNextId(), 1);
   }
 
@@ -295,7 +289,6 @@ contract KiddoPerksTest is Test {
     emit ChildAdded(childNameTwo, CHILD_TWO);
     kiddoPerks.addChild(childNameTwo, CHILD_TWO);
 
-    assertEq(kiddoPerks.s_activeChildren(), 2);
     assertEq(kiddoPerks.s_childrenNextId(), 2);
     (, string memory nameOne,,) = kiddoPerks.s_children(0);
     assertEq(nameOne, childNameOne);
@@ -317,7 +310,6 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removeChild(childId);
 
     assertTrue(kiddoPerks.childBy(childId).removed);
-    assertEq(kiddoPerks.s_activeChildren(), 0);
   }
 
   function testRevertsIfNoParentTriesToRemoveAChild() public withChildCreated {

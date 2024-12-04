@@ -369,37 +369,41 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "children",
+          name: "childBy",
           inputs: [
             {
-              name: "",
+              name: "id",
               type: "uint256",
               internalType: "uint256",
             },
           ],
           outputs: [
             {
-              name: "name",
-              type: "string",
-              internalType: "string",
-            },
-            {
-              name: "childAddr",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "childrenLength",
-          inputs: [],
-          outputs: [
-            {
               name: "",
-              type: "uint256",
-              internalType: "uint256",
+              type: "tuple",
+              internalType: "struct KiddoPerks.Child",
+              components: [
+                {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "name",
+                  type: "string",
+                  internalType: "string",
+                },
+                {
+                  name: "childAddr",
+                  type: "address",
+                  internalType: "address",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
             },
           ],
           stateMutability: "view",
@@ -421,30 +425,6 @@ const deployedContracts = {
           ],
           outputs: [],
           stateMutability: "nonpayable",
-        },
-        {
-          type: "function",
-          name: "completedTasksByUser",
-          inputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "bool",
-              internalType: "bool",
-            },
-          ],
-          stateMutability: "view",
         },
         {
           type: "function",
@@ -493,6 +473,11 @@ const deployedContracts = {
               internalType: "struct KiddoPerks.Child[]",
               components: [
                 {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
                   name: "name",
                   type: "string",
                   internalType: "string",
@@ -501,6 +486,11 @@ const deployedContracts = {
                   name: "childAddr",
                   type: "address",
                   internalType: "address",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
                 },
               ],
             },
@@ -518,6 +508,11 @@ const deployedContracts = {
               internalType: "struct KiddoPerks.Perk[]",
               components: [
                 {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
                   name: "title",
                   type: "string",
                   internalType: "string",
@@ -526,6 +521,11 @@ const deployedContracts = {
                   name: "tokensRequired",
                   type: "uint256",
                   internalType: "uint256",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
                 },
               ],
             },
@@ -543,6 +543,11 @@ const deployedContracts = {
               internalType: "struct KiddoPerks.Task[]",
               components: [
                 {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
                   name: "title",
                   type: "string",
                   internalType: "string",
@@ -551,6 +556,11 @@ const deployedContracts = {
                   name: "tokensReward",
                   type: "uint256",
                   internalType: "uint256",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
                 },
               ],
             },
@@ -609,24 +619,41 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "perks",
+          name: "perkBy",
           inputs: [
             {
-              name: "",
+              name: "id",
               type: "uint256",
               internalType: "uint256",
             },
           ],
           outputs: [
             {
-              name: "title",
-              type: "string",
-              internalType: "string",
-            },
-            {
-              name: "tokensRequired",
-              type: "uint256",
-              internalType: "uint256",
+              name: "",
+              type: "tuple",
+              internalType: "struct KiddoPerks.Perk",
+              components: [
+                {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "title",
+                  type: "string",
+                  internalType: "string",
+                },
+                {
+                  name: "tokensRequired",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
             },
           ],
           stateMutability: "view",
@@ -634,6 +661,19 @@ const deployedContracts = {
         {
           type: "function",
           name: "removeChild",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "removePerk",
           inputs: [
             {
               name: "id",
@@ -666,6 +706,171 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "s_children",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "name",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "childAddr",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "removed",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_childrenNextId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_completedTasksByUser",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_perks",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "title",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "tokensRequired",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "removed",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_perksNextId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_taskNextId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_tasks",
+          inputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "title",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "tokensReward",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "removed",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
           name: "setParent",
           inputs: [
             {
@@ -679,37 +884,41 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "tasks",
+          name: "taskBy",
           inputs: [
             {
-              name: "",
+              name: "id",
               type: "uint256",
               internalType: "uint256",
             },
           ],
           outputs: [
             {
-              name: "title",
-              type: "string",
-              internalType: "string",
-            },
-            {
-              name: "tokensReward",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "tasksLength",
-          inputs: [],
-          outputs: [
-            {
               name: "",
-              type: "uint256",
-              internalType: "uint256",
+              type: "tuple",
+              internalType: "struct KiddoPerks.Task",
+              components: [
+                {
+                  name: "id",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "title",
+                  type: "string",
+                  internalType: "string",
+                },
+                {
+                  name: "tokensReward",
+                  type: "uint256",
+                  internalType: "uint256",
+                },
+                {
+                  name: "removed",
+                  type: "bool",
+                  internalType: "bool",
+                },
+              ],
             },
           ],
           stateMutability: "view",
@@ -812,6 +1021,19 @@ const deployedContracts = {
         },
         {
           type: "event",
+          name: "PerkRemoved",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
           name: "TaskCompleted",
           inputs: [
             {
@@ -854,6 +1076,72 @@ const deployedContracts = {
             },
           ],
           anonymous: false,
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__CannotCompleteRemovedTask",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__ChildAlreadyRemoved",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__NotValidId",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__PerkAlreadyRemoved",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__TaskAlreadyRemoved",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "KiddoPerks__TaskNotFound",
+          inputs: [
+            {
+              name: "id",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
         },
         {
           type: "error",

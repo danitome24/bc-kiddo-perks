@@ -16,13 +16,16 @@ export const PerksListGrid = ({ childTokens }: PerksListGridProps) => {
 
   useEffect(() => {
     if (currentPerks != undefined) {
-      const perks = currentPerks.map((perk, i) => {
-        return {
-          id: i,
-          title: perk.title,
-          tokensRequired: BigInt(perk.tokensRequired),
-        };
-      });
+      const perks = currentPerks
+        .filter(perk => perk.removed == false)
+        .map((perk, i) => {
+          return {
+            id: i,
+            title: perk.title,
+            removed: perk.removed,
+            tokensRequired: BigInt(perk.tokensRequired),
+          };
+        });
       setPerks([...perks]);
     }
   }, [currentPerks]);

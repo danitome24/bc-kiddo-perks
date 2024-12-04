@@ -12,14 +12,17 @@ export const TasksList = () => {
 
   useEffect(() => {
     if (currentTasks != undefined) {
-      const tasks = currentTasks.map((task, i) => {
-        return {
-          id: i,
-          title: task.title,
-          tokensReward: task.tokensReward,
-          status: "Pending",
-        };
-      });
+      const tasks = currentTasks
+        .filter(task => task.removed == false)
+        .map((task, i) => {
+          return {
+            id: i,
+            title: task.title,
+            removed: task.removed,
+            tokensReward: task.tokensReward,
+            status: "Pending",
+          };
+        });
       setTasks([...tasks]);
     }
   }, [currentTasks]);

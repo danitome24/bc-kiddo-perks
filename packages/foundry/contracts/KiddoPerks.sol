@@ -26,15 +26,12 @@ contract KiddoPerks is Ownable {
 
   mapping(uint256 => Child) public s_children;
   uint256 public s_childrenNextId = 0;
-  uint256 public s_activeChildren = 0;
 
   mapping(uint256 => Perk) public s_perks;
   uint256 public s_perksNextId = 0;
-  uint256 public s_activePerks = 0;
 
   mapping(uint256 => Task) public s_tasks;
   uint256 public s_taskNextId = 0;
-  uint256 public s_activeTaskCount = 0;
   mapping(uint256 => mapping(address => bool)) public s_completedTasksByUser;
 
   struct Task {
@@ -88,7 +85,6 @@ contract KiddoPerks is Ownable {
   ) public onlyOwner {
     s_tasks[s_taskNextId] = Task(s_taskNextId, title, tokensReward, false);
     s_taskNextId++;
-    s_activeTaskCount++;
     emit TaskCreated(title);
   }
 
@@ -123,7 +119,6 @@ contract KiddoPerks is Ownable {
     }
 
     s_tasks[id].removed = true;
-    s_activeTaskCount--;
 
     emit TaskRemoved(id);
   }
@@ -136,14 +131,10 @@ contract KiddoPerks is Ownable {
   }
 
   function getAllTasks() public view returns (Task[] memory) {
-    Task[] memory allTasks = new Task[](s_activeTaskCount);
+    Task[] memory allTasks = new Task[](s_taskNextId);
 
-    uint256 index = 0;
     for (uint256 i = 0; i < s_taskNextId; i++) {
-      if (!s_tasks[i].removed) {
-        allTasks[index] = s_tasks[i];
-        index++;
-      }
+      allTasks[i] = s_tasks[i];
     }
 
     return allTasks;
@@ -158,7 +149,6 @@ contract KiddoPerks is Ownable {
   ) public onlyOwner {
     Perk memory newPerk = Perk(s_perksNextId, title, tokensRequired, false);
     s_perks[s_perksNextId] = newPerk;
-    s_activePerks++;
     s_perksNextId++;
     emit PerkCreated(title, tokensRequired);
   }
@@ -180,19 +170,15 @@ contract KiddoPerks is Ownable {
     }
 
     s_perks[id].removed = true;
-    s_activePerks--;
 
     emit PerkRemoved(id);
   }
 
   function getAllPerks() public view returns (Perk[] memory) {
-    Perk[] memory allPerks = new Perk[](s_activePerks);
+    Perk[] memory allPerks = new Perk[](s_perksNextId);
 
-    uint256 index;
-    for (uint256 i = 0; i < s_activePerks; i++) {
-      if (!s_perks[i].removed) {
-        allPerks[index] = s_perks[i];
-      }
+    for (uint256 i = 0; i < s_perksNextId; i++) {
+      allPerks[i] = s_perks[i];
     }
 
     return allPerks;
@@ -205,7 +191,6 @@ contract KiddoPerks is Ownable {
     Child memory newChild = Child(s_childrenNextId, name, childAddr, false);
     s_children[s_childrenNextId] = newChild;
     s_childrenNextId++;
-    s_activeChildren++;
 
     emit ChildAdded(name, childAddr);
   }
@@ -227,19 +212,15 @@ contract KiddoPerks is Ownable {
     }
 
     s_children[id].removed = true;
-    s_activeChildren--;
 
     emit ChildRemoved(id);
   }
 
   function getAllChildren() public view returns (Child[] memory) {
-    Child[] memory allChildren = new Child[](s_activeChildren);
+    Child[] memory allChildren = new Child[](s_childrenNextId);
 
-    uint256 index;
     for (uint256 i = 0; i < s_childrenNextId; i++) {
-      if (!s_children[i].removed) {
-        allChildren[index] = s_children[i];
-      }
+      allChildren[i] = s_children[i];
     }
 
     return allChildren;

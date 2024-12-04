@@ -20,13 +20,16 @@ const PerksPage: NextPage = () => {
 
   useEffect(() => {
     if (currentPerks != undefined) {
-      const fetchedPerks = currentPerks.map((perk, i) => {
-        return {
-          id: i, // Provisional
-          title: perk.title,
-          tokensRequired: perk.tokensRequired,
-        } as Perk;
-      });
+      const fetchedPerks = currentPerks
+        .filter(perk => perk.removed == false)
+        .map(perk => {
+          return {
+            id: Number(perk.id), // Provisional
+            title: perk.title,
+            removed: perk.removed,
+            tokensRequired: perk.tokensRequired,
+          } as Perk;
+        });
       setPerks([...fetchedPerks]);
     }
   }, [currentPerks]);
@@ -41,7 +44,7 @@ const PerksPage: NextPage = () => {
       });
       setPerks([
         ...perks,
-        { id: perks.length + 1, title: newPerk.title, tokensRequired: BigInt(newPerk.tokensRequired) },
+        { id: perks.length + 1, title: newPerk.title, removed: false, tokensRequired: BigInt(newPerk.tokensRequired) },
       ]);
       setNewPerk({ title: "", tokensRequired: BigInt(0) });
     } catch (e) {

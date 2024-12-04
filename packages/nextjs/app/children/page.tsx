@@ -17,6 +17,7 @@ const ChildPage: NextPage = () => {
     id: 0,
     name: "",
     address: "0x0",
+    removed: false,
     avatar: "",
     tokens: BigInt(0),
   });
@@ -28,15 +29,18 @@ const ChildPage: NextPage = () => {
 
   useEffect(() => {
     if (Array.isArray(currentChildren)) {
-      const parsedCurrentChildren = currentChildren.map((child, i) => {
-        return {
-          id: i,
-          name: child.name,
-          address: child.childAddr,
-          avatar: "",
-          tokens: BigInt(0),
-        };
-      });
+      const parsedCurrentChildren = currentChildren
+        .filter(child => child.removed == false)
+        .map(child => {
+          return {
+            id: child.id,
+            name: child.name,
+            removed: child.removed,
+            address: child.childAddr,
+            avatar: "",
+            tokens: BigInt(0),
+          };
+        });
       setChildren([...parsedCurrentChildren]);
     }
   }, [currentChildren]);
@@ -50,7 +54,7 @@ const ChildPage: NextPage = () => {
       });
 
       setChildren([...children, { ...newChild, id: children.length + 1, tokens: BigInt(0) }]);
-      setNewChild({ id: 0, name: "", address: "0x0", avatar: "", tokens: BigInt(0) });
+      setNewChild({ id: 0, name: "", address: "0x0", removed: false, avatar: "", tokens: BigInt(0) });
     } catch (e) {
       console.error("Error adding new child: ", e);
     }

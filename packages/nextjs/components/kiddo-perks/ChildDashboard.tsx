@@ -5,12 +5,14 @@ export const ChildDashboard = () => {
   const currentTokens = 120 * 10 ** 18;
   const completedTasks = 3;
 
-  const { data: totalTasks } = useScaffoldReadContract({
+  const { data: taskNextId } = useScaffoldReadContract({
     contractName: "KiddoPerks",
-    functionName: "tasksLength",
+    functionName: "s_taskNextId",
   });
 
-  const tasks = Number(totalTasks) < completedTasks ? completedTasks : Number(totalTasks);
+  const totalTasks = Number(taskNextId) - 1;
+
+  const tasks = totalTasks < completedTasks ? completedTasks : totalTasks;
 
   const pendingTasks = tasks - completedTasks;
 

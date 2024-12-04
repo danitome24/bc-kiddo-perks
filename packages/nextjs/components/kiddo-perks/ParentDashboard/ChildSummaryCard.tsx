@@ -8,10 +8,12 @@ type ChildSummaryCardProps = {
 
 export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
   const completedTasks = child.progress ? child.progress?.completed : 0;
-  const { data: totalTasks } = useScaffoldReadContract({
+  const { data: taskNextId } = useScaffoldReadContract({
     contractName: "KiddoPerks",
-    functionName: "tasksLength",
+    functionName: "s_taskNextId",
   });
+
+  const totalTasks = Number(taskNextId) - 1;
 
   return (
     <div className="card bg-primary shadow-xl">

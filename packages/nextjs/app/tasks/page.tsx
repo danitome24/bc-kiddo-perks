@@ -24,13 +24,16 @@ const TasksPage: NextPage = () => {
 
   useEffect(() => {
     if (currentTasks != undefined) {
-      const formattedTasks = currentTasks.map((task, i) => {
-        return {
-          id: i,
-          title: task.title,
-          tokensReward: task.tokensReward,
-        };
-      });
+      const formattedTasks = currentTasks
+        .filter(task => task.removed == false)
+        .map((task, i) => {
+          return {
+            id: i,
+            title: task.title,
+            removed: task.removed,
+            tokensReward: task.tokensReward,
+          };
+        });
 
       setTasks([...formattedTasks]);
     }
@@ -43,7 +46,10 @@ const TasksPage: NextPage = () => {
         functionName: "createTask",
         args: [newTask.title, newTask.tokensReward],
       });
-      setTasks([...tasks, { id: tasks.length + 1, title: newTask.title, tokensReward: newTask.tokensReward }]);
+      setTasks([
+        ...tasks,
+        { id: tasks.length + 1, title: newTask.title, removed: false, tokensReward: newTask.tokensReward },
+      ]);
       setNewTask({ title: "", tokensReward: BigInt(0) });
     } catch (e) {
       console.error("Error on adding new task:", e);
