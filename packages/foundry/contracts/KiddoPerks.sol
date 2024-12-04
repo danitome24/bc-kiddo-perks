@@ -21,8 +21,9 @@ contract KiddoPerks is Ownable {
   IERC20 token;
   address public parent;
 
-  mapping(uint256 => Child) public children;
-  uint256 public childrenLength = 0;
+  mapping(uint256 => Child) public s_children;
+  uint256 public s_childrenNextId = 0;
+  uint256 public s_activeChildren = 0;
 
   Perk[] public perks;
 
@@ -159,8 +160,9 @@ contract KiddoPerks is Ownable {
    */
   function addChild(string memory name, address childAddr) public onlyOwner {
     Child memory newChild = Child(name, childAddr);
-    children[childrenLength] = newChild;
-    childrenLength++;
+    s_children[s_childrenNextId] = newChild;
+    s_childrenNextId++;
+    s_activeChildren++;
 
     emit ChildAdded(name, childAddr);
   }
@@ -168,17 +170,18 @@ contract KiddoPerks is Ownable {
   function removeChild(
     uint256 id
   ) public onlyOwner {
-    delete children[id];
-    childrenLength--;
+    delete s_children[id];
+    s_activeChildren--;
 
     emit ChildRemoved(id);
   }
 
   function getAllChildren() public view returns (Child[] memory) {
-    Child[] memory allChildren = new Child[](childrenLength);
+    Child[] memory allChildren = new Child[](s_activeChildren);
 
-    for (uint256 i = 0; i < childrenLength; i++) {
-      allChildren[i] = children[i];
+    uint256 index;
+    for (uint256 i = 0; i < s_childrenNextId; i++) {
+      allChildren[index] = s_children[i];
     }
 
     return allChildren;

@@ -22,6 +22,9 @@ contract KiddoPerksTest is Test {
     kiddoPerks.setParent(PARENT);
   }
 
+  /////////////////////
+  //// Task test
+  /////////////////////
   function testOnlyParentCanCreateTask() public {
     string memory taskName = "Clean up room";
 
@@ -179,6 +182,9 @@ contract KiddoPerksTest is Test {
     assertEq(kiddoPerks.s_activeTaskCount(), 0);
   }
 
+  /////////////////////
+  //// Perk test
+  /////////////////////
   event PerkCreated(string title, uint256 tokensRequired);
 
   function testParentCanCreatePerk() public withTaskCreated {
@@ -189,6 +195,9 @@ contract KiddoPerksTest is Test {
     kiddoPerks.createPerk(perkTitle, SMALL_REQUIRED_TOKENS_AMOUNT);
   }
 
+  /////////////////////
+  //// Child test
+  /////////////////////
   function testRevertsIfNoParentTriesToAddChild() public withTaskCreated {
     string memory childName = "Willy";
     vm.prank(CHILD_ONE);
