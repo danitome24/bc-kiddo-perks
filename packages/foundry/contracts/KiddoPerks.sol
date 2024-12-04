@@ -33,6 +33,7 @@ contract KiddoPerks is Ownable {
   mapping(uint256 => mapping(address => bool)) public s_completedTasksByUser;
 
   struct Task {
+    uint256 id;
     string title;
     uint256 tokensReward;
     bool removed;
@@ -76,7 +77,7 @@ contract KiddoPerks is Ownable {
     string memory title,
     uint256 tokensReward
   ) public onlyOwner {
-    s_tasks[s_taskNextId] = Task(title, tokensReward, false);
+    s_tasks[s_taskNextId] = Task(s_taskNextId, title, tokensReward, false);
     s_taskNextId++;
     s_activeTaskCount++;
     emit TaskCreated(title);
