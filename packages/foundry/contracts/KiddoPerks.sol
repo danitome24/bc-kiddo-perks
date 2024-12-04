@@ -171,6 +171,12 @@ contract KiddoPerks is Ownable {
     emit ChildAdded(name, childAddr);
   }
 
+  function childBy(
+    uint256 id
+  ) public view returns (Child memory) {
+    return s_children[id];
+  }
+
   function removeChild(
     uint256 id
   ) public onlyOwner {

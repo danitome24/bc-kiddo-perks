@@ -249,13 +249,17 @@ contract KiddoPerksTest is Test {
 
   function testParentCanRemoveAChild() public withTaskCreated {
     string memory childName = "Willy";
+    uint256 childId = 0;
     vm.prank(PARENT);
     kiddoPerks.addChild(childName, CHILD_ONE);
 
     vm.prank(PARENT);
     vm.expectEmit(true, false, false, true);
-    emit ChildRemoved(0);
-    kiddoPerks.removeChild(0);
+    emit ChildRemoved(childId);
+    kiddoPerks.removeChild(childId);
+
+    assertTrue(kiddoPerks.childBy(childId).removed);
+    assertEq(kiddoPerks.s_activeChildren(), 0);
   }
 
   function testRevertsIfNoParentTriesToRemoveAChild() public withChildCreated {
