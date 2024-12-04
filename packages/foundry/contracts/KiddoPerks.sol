@@ -11,14 +11,20 @@ contract KiddoPerks is Ownable {
   event ChildAdded(string name, address childAddr);
   event ChildRemoved(uint256 id);
   event ParentUpdated(address newParentAddress);
+  event TaskRemoved(uint256 id);
 
   IERC20 token;
   address public parent;
+
   mapping(uint256 => Child) public children;
   uint256 public childrenLength = 0;
+
   Perk[] public perks;
+
   mapping(uint256 => Task) public tasks;
+  uint256[] s_tasksIds;
   uint256 public tasksLength = 0;
+
   mapping(uint256 => mapping(address => bool)) public completedTasksByUser;
 
   struct Task {
@@ -65,6 +71,7 @@ contract KiddoPerks is Ownable {
     uint256 tokensReward
   ) public onlyOwner {
     tasks[tasksLength] = Task(title, tokensReward);
+    s_tasksIds.push();
     tasksLength++;
     emit TaskCreated(title);
   }
@@ -74,6 +81,15 @@ contract KiddoPerks is Ownable {
     emit TaskCompleted(tasks[taskId].title, by);
 
     // TODO: reward
+  }
+
+  function removeTask(
+    uint256 id
+  ) public onlyOwner {
+    delete tasks[id];
+    tasksLength--;
+
+    emit TaskRemoved(id);
   }
 
   function isTaskCompletedBy(

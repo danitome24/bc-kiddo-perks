@@ -50,8 +50,16 @@ const TasksPage: NextPage = () => {
     }
   };
 
-  const handleDeleteTask = (id: number) => {
-    setTasks(tasks.filter(task => task.id !== id));
+  const handleDeleteTask = async (id: number) => {
+    try {
+      await writeKiddoPerksContract({
+        functionName: "removeTask",
+        args: [BigInt(id)],
+      });
+      setTasks(tasks.filter(task => task.id !== id));
+    } catch (e) {
+      console.error("Error on removing task:", e);
+    }
   };
 
   const handleCompleteTaskBy = async (taskId: number, by: Child) => {
