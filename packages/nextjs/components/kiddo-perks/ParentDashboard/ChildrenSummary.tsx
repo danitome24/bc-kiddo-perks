@@ -1,13 +1,20 @@
 import Link from "next/link";
 import { ChildSummaryCard } from "./ChildSummaryCard";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { Child } from "~~/types/kiddoPerks";
+import { Child, Task } from "~~/types/kiddoPerks";
 
 export const ChildrenSummary = () => {
   const { data: childrenData } = useScaffoldReadContract({
     contractName: "KiddoPerks",
     functionName: "getAllChildren",
   }) as { data: Child[] | undefined };
+
+  const { data: tasks } = useScaffoldReadContract({
+    contractName: "KiddoPerks",
+    functionName: "getAllTasks",
+  }) as { data: Task[] | undefined };
+
+  const totalTasks = tasks?.filter(tasks => tasks.removed == false).length as number;
 
   if (childrenData == undefined) {
     return <section>Loading...</section>;
@@ -35,8 +42,8 @@ export const ChildrenSummary = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {childrenData
           .filter(child => child.removed == false)
-          .map((child, i) => (
-            <ChildSummaryCard key={i} child={child} />
+          .map(child => (
+            <ChildSummaryCard key={child.id} child={child} totalTasks={totalTasks} />
           ))}
       </div>
     </section>

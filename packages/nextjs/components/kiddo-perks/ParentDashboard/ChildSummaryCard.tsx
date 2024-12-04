@@ -1,19 +1,13 @@
 import Image from "next/image";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
 type ChildSummaryCardProps = {
   child: Child;
+  totalTasks: number;
 };
 
-export const ChildSummaryCard = ({ child }: ChildSummaryCardProps) => {
+export const ChildSummaryCard = ({ child, totalTasks }: ChildSummaryCardProps) => {
   const completedTasks = child.progress ? child.progress?.completed : 0;
-  const { data: taskNextId } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "s_taskNextId",
-  });
-
-  const totalTasks = Number(taskNextId) - 1;
 
   return (
     <div className="card bg-primary shadow-xl">
