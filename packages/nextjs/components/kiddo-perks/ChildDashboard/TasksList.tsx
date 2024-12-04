@@ -1,31 +1,7 @@
-import { useEffect, useState } from "react";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { Task } from "~~/types/kiddoPerks";
+import { useTaskManager } from "~~/hooks/kiddo-perks/useTasksManager";
 
 export const TasksList = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  const { data: currentTasks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllTasks",
-  });
-
-  useEffect(() => {
-    if (currentTasks != undefined) {
-      const tasks = currentTasks
-        .filter(task => task.removed == false)
-        .map((task, i) => {
-          return {
-            id: i,
-            title: task.title,
-            removed: task.removed,
-            tokensReward: task.tokensReward,
-            status: "Pending",
-          };
-        });
-      setTasks([...tasks]);
-    }
-  }, [currentTasks]);
+  const { tasks } = useTaskManager();
 
   if (tasks.length === 0) {
     return (
@@ -46,13 +22,9 @@ export const TasksList = () => {
           <div key={task.id} className="p-4 flex justify-between items-center">
             <div>
               <h3 className="text-lg font-medium">{task.title}</h3>
-              <p className={`text-sm font-semibold ${task.status === "Pending" ? "text-warning" : "text-success"}`}>
-                {task.status}
-              </p>
+              <p className="text-sm font-semibold text-warning">Pending</p>
             </div>
-            {task.status === "Pending" && (
-              <button className="btn btn-success text-sm text-success-content hover:underline">Mark as Done</button>
-            )}
+            <button className="btn btn-success text-sm text-success-content hover:underline">Mark as Done</button>
           </div>
         ))}
       </div>

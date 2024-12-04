@@ -1,55 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NextPage } from "next";
 import { TaskCard } from "~~/components/kiddo-perks/TaskCard";
 import { IntegerInput } from "~~/components/scaffold-eth";
 import { useFetchChildren } from "~~/hooks/kiddo-perks/useFetchChildren";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { Child, Task } from "~~/types/kiddoPerks";
-import { notification } from "~~/utils/scaffold-eth";
+import { useTaskManager } from "~~/hooks/kiddo-perks/useTasksManager";
+import { Child } from "~~/types/kiddoPerks";
 
 const TasksPage: NextPage = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [newTask, setNewTask] = useState({ title: "", tokensReward: BigInt(0) });
 
-  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
-
   const childrenData = useFetchChildren();
-
-  const { data: currentTasks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllTasks",
-  });
-
-  useEffect(() => {
-    if (currentTasks != undefined) {
-      const formattedTasks = currentTasks
-        .filter(task => task.removed == false)
-        .map((task, i) => {
-          return {
-            id: i,
-            title: task.title,
-            removed: task.removed,
-            tokensReward: task.tokensReward,
-          };
-        });
-
-      setTasks([...formattedTasks]);
-    }
-  }, [currentTasks]);
+  const { tasks, addTask, removeTask, completeTaskBy } = useTaskManager();
 
   const handleAddTask = async () => {
     if (!newTask.title) return;
     try {
-      await writeKiddoPerksContract({
-        functionName: "createTask",
-        args: [newTask.title, newTask.tokensReward],
-      });
-      setTasks([
-        ...tasks,
-        { id: tasks.length + 1, title: newTask.title, removed: false, tokensReward: newTask.tokensReward },
-      ]);
+      addTask(newTask.title, newTask.tokensReward);
       setNewTask({ title: "", tokensReward: BigInt(0) });
     } catch (e) {
       console.error("Error on adding new task:", e);
@@ -58,11 +26,7 @@ const TasksPage: NextPage = () => {
 
   const handleDeleteTask = async (id: number) => {
     try {
-      await writeKiddoPerksContract({
-        functionName: "removeTask",
-        args: [BigInt(id)],
-      });
-      setTasks(tasks.filter(task => task.id !== id));
+      removeTask(id);
     } catch (e) {
       console.error("Error on removing task:", e);
     }
@@ -70,11 +34,7 @@ const TasksPage: NextPage = () => {
 
   const handleCompleteTaskBy = async (taskId: number, by: Child) => {
     try {
-      await writeKiddoPerksContract({
-        functionName: "completeTask",
-        args: [BigInt(taskId), by.address],
-      });
-      notification.success(`Task completed by: ${by.name}`);
+      completeTaskBy(taskId, by);
     } catch (e) {
       console.error("Error on completing task: ", e);
     }
