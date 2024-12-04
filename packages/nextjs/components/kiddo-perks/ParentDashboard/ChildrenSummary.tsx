@@ -18,7 +18,6 @@ export const ChildrenSummary = () => {
           address: child.childAddr as `0x${string}`,
           removed: child.removed,
           avatar: "childAvatar.png",
-          tokens: BigInt(0),
         }))
     : [];
 

@@ -1,12 +1,8 @@
 import Link from "next/link";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { Perk } from "~~/types/kiddoPerks";
+import { usePerksManager } from "~~/hooks/kiddo-perks";
 
 export const PerksSummary = () => {
-  const { data: perks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllPerks",
-  }) as { data: Perk[] | undefined };
+  const { perks } = usePerksManager();
 
   if (perks == undefined) {
     return <section>Loading...</section>;

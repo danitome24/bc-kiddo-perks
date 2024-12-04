@@ -1,15 +1,11 @@
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
 import { useAccount } from "wagmi";
+import { useTokenBalance } from "~~/hooks/kiddo-perks";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 export const ChildDashboard = () => {
   const account = useAccount();
-  const { data: tokensBalance } = useScaffoldReadContract({
-    contractName: "KDOToken",
-    functionName: "balanceOf",
-    args: [account.address],
-  });
-  const childTokens = Number(tokensBalance) ?? 0;
+  const { rawTokenBalance, formattedTokenBalance } = useTokenBalance(account.address || "");
 
   const { data: taskNextId } = useScaffoldReadContract({
     contractName: "KiddoPerks",
@@ -26,7 +22,7 @@ export const ChildDashboard = () => {
         title="Welcome, Sofia!"
         subtitle={
           <>
-            You have <span className="text-secondary font-semibold text-2xl">{childTokens / 10 ** 18} tokens</span> to
+            You have <span className="text-secondary font-semibold text-2xl">{formattedTokenBalance} KDO</span> to
             spend!
           </>
         }
@@ -40,7 +36,7 @@ export const ChildDashboard = () => {
 
       <TasksList />
 
-      <PerksListGrid childTokens={childTokens} />
+      <PerksListGrid childTokens={rawTokenBalance} />
     </div>
   );
 };
