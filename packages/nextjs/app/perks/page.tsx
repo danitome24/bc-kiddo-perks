@@ -52,8 +52,16 @@ const PerksPage: NextPage = () => {
     }
   };
 
-  const handleDeletePerk = (id: number) => {
-    setPerks(perks.filter(perk => perk.id !== id));
+  const handleRemovePerk = async (id: number) => {
+    try {
+      await writeKiddoPerksContract({
+        functionName: "removePerk",
+        args: [BigInt(id)],
+      });
+      setPerks(perks.filter(perk => perk.id !== id));
+    } catch (e) {
+      console.error("Error on remove Perks:", e);
+    }
   };
 
   return (
@@ -76,7 +84,7 @@ const PerksPage: NextPage = () => {
             {perks.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {perks.map(perk => (
-                  <PerkCard key={perk.id} onDelete={handleDeletePerk} perk={perk} />
+                  <PerkCard key={perk.id} onDelete={handleRemovePerk} perk={perk} />
                 ))}
               </div>
             )}
