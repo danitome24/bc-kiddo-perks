@@ -1,34 +1,11 @@
-import { useEffect, useState } from "react";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { Perk } from "~~/types/kiddoPerks";
+import { usePerksManager } from "~~/hooks/kiddo-perks";
 
 type PerksListGridProps = {
   childTokens: number;
 };
 
 export const PerksListGrid = ({ childTokens }: PerksListGridProps) => {
-  const [perks, setPerks] = useState<Perk[]>([]);
-
-  const { data: currentPerks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllPerks",
-  });
-
-  useEffect(() => {
-    if (currentPerks != undefined) {
-      const perks = currentPerks
-        .filter(perk => perk.removed == false)
-        .map((perk, i) => {
-          return {
-            id: i,
-            title: perk.title,
-            removed: perk.removed,
-            tokensRequired: BigInt(perk.tokensRequired),
-          };
-        });
-      setPerks([...perks]);
-    }
-  }, [currentPerks]);
+  const { perks } = usePerksManager();
 
   if (perks.length === 0) {
     return (

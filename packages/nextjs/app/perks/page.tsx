@@ -1,51 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NextPage } from "next";
 import { PerkCard } from "~~/components/kiddo-perks";
 import { IntegerInput } from "~~/components/scaffold-eth";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { Perk } from "~~/types/kiddoPerks";
+import { usePerksManager } from "~~/hooks/kiddo-perks";
 
 const PerksPage: NextPage = () => {
-  const { writeContractAsync: writeKiddoPerksContract } = useScaffoldWriteContract("KiddoPerks");
-  const [perks, setPerks] = useState<Perk[]>([]);
   const [newPerk, setNewPerk] = useState({ title: "", tokensRequired: BigInt(0) });
 
-  // Data Fetching
-  const { data: currentPerks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllPerks",
-  });
+  const { perks, addPerk, removePerk } = usePerksManager();
 
-  useEffect(() => {
-    if (currentPerks != undefined) {
-      const fetchedPerks = currentPerks
-        .filter(perk => perk.removed == false)
-        .map(perk => {
-          return {
-            id: Number(perk.id), // Provisional
-            title: perk.title,
-            removed: perk.removed,
-            tokensRequired: perk.tokensRequired,
-          } as Perk;
-        });
-      setPerks([...fetchedPerks]);
-    }
-  }, [currentPerks]);
-
-  // Handle data
   const handleAddPerk = async () => {
     if (!newPerk.title || newPerk.tokensRequired <= 0) return;
     try {
-      await writeKiddoPerksContract({
-        functionName: "createPerk",
-        args: [newPerk.title, BigInt(newPerk.tokensRequired)],
-      });
-      setPerks([
-        ...perks,
-        { id: perks.length + 1, title: newPerk.title, removed: false, tokensRequired: BigInt(newPerk.tokensRequired) },
-      ]);
+      await addPerk(newPerk.title, newPerk.tokensRequired);
       setNewPerk({ title: "", tokensRequired: BigInt(0) });
     } catch (e) {
       console.error("Error creating new Perk");
@@ -54,11 +23,7 @@ const PerksPage: NextPage = () => {
 
   const handleRemovePerk = async (id: number) => {
     try {
-      await writeKiddoPerksContract({
-        functionName: "removePerk",
-        args: [BigInt(id)],
-      });
-      setPerks(perks.filter(perk => perk.id !== id));
+      await removePerk(id);
     } catch (e) {
       console.error("Error on remove Perks:", e);
     }
