@@ -11,6 +11,7 @@ contract DeployKiddoPerks is ScaffoldETHDeploy {
     address PARENT = 0x27dBc64e6C38633eD526d970258372476BCE58C0;
 
     KDOToken token = new KDOToken();
+    token.transferOwnership(PARENT);
 
     KiddoPerks kiddoPerks = new KiddoPerks(token);
     console.logString(
