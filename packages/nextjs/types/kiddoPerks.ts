@@ -4,8 +4,6 @@ export type Child = {
   address: `0x${string}`;
   removed: boolean;
   avatar: string;
-  tokens: bigint;
-  progress?: { completed: number; total: number };
 };
 
 export type Perk = {

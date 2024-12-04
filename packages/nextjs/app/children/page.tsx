@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { NextPage } from "next";
-import { CrossButton } from "~~/components/kiddo-perks";
-import { Address, AddressInput } from "~~/components/scaffold-eth";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { ChildCard } from "~~/components/kiddo-perks/ChildCard";
+import { AddressInput } from "~~/components/scaffold-eth";
+import { useFetchChildren } from "~~/hooks/kiddo-perks/useFetchChildren";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
 const ChildPage: NextPage = () => {
@@ -19,31 +19,13 @@ const ChildPage: NextPage = () => {
     address: "0x0",
     removed: false,
     avatar: "",
-    tokens: BigInt(0),
   });
 
-  const { data: currentChildren } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllChildren",
-  });
+  const childrenData = useFetchChildren();
 
   useEffect(() => {
-    if (Array.isArray(currentChildren)) {
-      const parsedCurrentChildren = currentChildren
-        .filter(child => child.removed == false)
-        .map(child => {
-          return {
-            id: child.id,
-            name: child.name,
-            removed: child.removed,
-            address: child.childAddr,
-            avatar: "",
-            tokens: BigInt(0),
-          };
-        });
-      setChildren([...parsedCurrentChildren]);
-    }
-  }, [currentChildren]);
+    setChildren([...childrenData]);
+  }, [childrenData]);
 
   const handleAddChild = async () => {
     if (!newChild.name) return;
@@ -53,8 +35,8 @@ const ChildPage: NextPage = () => {
         args: [newChild.name, newChild.address as `0x${string}`],
       });
 
-      setChildren([...children, { ...newChild, id: children.length + 1, tokens: BigInt(0) }]);
-      setNewChild({ id: 0, name: "", address: "0x0", removed: false, avatar: "", tokens: BigInt(0) });
+      setChildren([...children, { ...newChild, id: children.length + 1 }]);
+      setNewChild({ id: 0, name: "", address: "0x0", removed: false, avatar: "" });
     } catch (e) {
       console.error("Error adding new child: ", e);
     }
@@ -91,23 +73,7 @@ const ChildPage: NextPage = () => {
             {children.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
                 {children.map(child => (
-                  <div key={child.id} className="bg-secondary shadow-md rounded-lg p-4 flex items-start gap-4">
-                    <Image
-                      className="w-16 h-16 rounded-full"
-                      width={36}
-                      height={36}
-                      src={"/childAvatar.png"}
-                      alt={child.name}
-                    />
-                    <div className="flex flex-col">
-                      <h3 className="text-lg font-bold ">{child.name}</h3>
-                      <p className="text-sm m-0">KDP: {child.tokens}</p>
-                      <Address format="short" size="xs" address={child.address}></Address>
-                    </div>
-                    <div className="ml-auto">
-                      <CrossButton onClickEvent={() => handleDeleteChild(child.id)}></CrossButton>
-                    </div>
-                  </div>
+                  <ChildCard key={child.id} child={child} handleDeleteChild={handleDeleteChild} />
                 ))}
               </div>
             )}

@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     KDOToken: {
-      address: "0x8ce361602b935680e8dec218b820ff5056beb7af",
+      address: "0x700b6a60ce7eaaea56f065753d8dcb9653dbad35",
       abi: [
         {
           type: "constructor",
@@ -450,7 +450,7 @@ const deployedContracts = {
       },
     },
     KiddoPerks: {
-      address: "0xe1da8919f262ee86f9be05059c9280142cf23f48",
+      address: "0xb19b36b1456e65e3a6d514d3f715f204bd59f431",
       abi: [
         {
           type: "constructor",

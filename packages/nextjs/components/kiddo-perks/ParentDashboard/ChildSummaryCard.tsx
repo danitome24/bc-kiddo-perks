@@ -8,7 +8,7 @@ type ChildSummaryCardProps = {
 };
 
 export const ChildSummaryCard = ({ child, totalTasks }: ChildSummaryCardProps) => {
-  const completedTasks = child.progress ? child.progress?.completed : 0;
+  const completedTasks = 0;
   const { data: tokensBalance } = useScaffoldReadContract({
     contractName: "KDOToken",
     functionName: "balanceOf",

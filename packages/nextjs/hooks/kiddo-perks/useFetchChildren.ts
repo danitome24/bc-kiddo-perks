@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useScaffoldReadContract } from "../scaffold-eth";
 import { Child } from "~~/types/kiddoPerks";
 
@@ -7,17 +8,21 @@ export const useFetchChildren = (): Child[] => {
     functionName: "getAllChildren",
   });
 
-  if (children == undefined) {
-    return [];
-  }
+  const processedChildren = useMemo(() => {
+    if (!children) return [];
 
-  return children.map((child, i) => {
-    return {
-      id: i,
-      name: child.name,
-      address: child.childAddr,
-      avatar: "childAvatar.png",
-      tokens: BigInt(0),
-    } as Child;
-  });
+    return children
+      .filter(child => child.removed === false)
+      .map(
+        (child, i) =>
+          ({
+            id: i,
+            name: child.name,
+            address: child.childAddr,
+            avatar: "childAvatar.png",
+          } as Child),
+      );
+  }, [children]);
+
+  return processedChildren;
 };
