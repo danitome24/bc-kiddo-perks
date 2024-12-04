@@ -269,6 +269,37 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removeChild(childId);
   }
 
+  function testRevertsIfTriesToRemoveNonExistingChild() public withChildCreated {
+    uint256 childId = 5;
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NotValidId.selector, childId
+      )
+    );
+    kiddoPerks.removeChild(childId);
+  }
+
+  function testRevertsIfTriesToRemoveAnAlreadyRemovedChild()
+    public
+    withChildCreated
+  {
+    uint256 childId = 0;
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, false, false, true);
+    emit ChildRemoved(0);
+    kiddoPerks.removeChild(0);
+
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__ChildAlreadyRemoved.selector, childId
+      )
+    );
+    kiddoPerks.removeChild(childId);
+  }
+
   /**
    * Modifiers
    */
