@@ -1,20 +1,24 @@
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
+import { useAccount } from "wagmi";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 export const ChildDashboard = () => {
-  const currentTokens = 120 * 10 ** 18;
-  const completedTasks = 3;
+  const account = useAccount();
+  const { data: tokensBalance } = useScaffoldReadContract({
+    contractName: "KDOToken",
+    functionName: "balanceOf",
+    args: [account.address],
+  });
+  const childTokens = Number(tokensBalance) ?? 0;
 
   const { data: taskNextId } = useScaffoldReadContract({
     contractName: "KiddoPerks",
     functionName: "s_taskNextId",
   });
 
-  const totalTasks = Number(taskNextId) - 1;
-
-  const tasks = totalTasks < completedTasks ? completedTasks : totalTasks;
-
-  const pendingTasks = tasks - completedTasks;
+  const completedTasks = 1; //TODO temporary number.
+  const totalTasks = taskNextId ? Number(taskNextId) : 0;
+  const pendingTasks = totalTasks - completedTasks;
 
   return (
     <div className="p-6 min-h-screen">
@@ -22,7 +26,7 @@ export const ChildDashboard = () => {
         title="Welcome, Sofia!"
         subtitle={
           <>
-            You have <span className="text-secondary font-semibold text-2xl">{currentTokens / 10 ** 18} tokens</span> to
+            You have <span className="text-secondary font-semibold text-2xl">{childTokens / 10 ** 18} tokens</span> to
             spend!
           </>
         }
@@ -36,7 +40,7 @@ export const ChildDashboard = () => {
 
       <TasksList />
 
-      <PerksListGrid childTokens={currentTokens} />
+      <PerksListGrid childTokens={childTokens} />
     </div>
   );
 };
