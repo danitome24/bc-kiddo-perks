@@ -14,6 +14,7 @@ contract KiddoPerksTest is Test {
 
   address PARENT = makeAddr("Daddy");
   address CHILD_ONE = makeAddr("Miky");
+  address CHILD_TWO = makeAddr("Owen");
 
   function setUp() public {
     kdoToken = new KDOToken();
@@ -217,6 +218,31 @@ contract KiddoPerksTest is Test {
     vm.expectEmit(true, true, false, true);
     emit ChildAdded(childName, CHILD_ONE);
     kiddoPerks.addChild(childName, CHILD_ONE);
+
+    assertEq(kiddoPerks.s_activeChildren(), 1);
+    assertEq(kiddoPerks.s_childrenNextId(), 1);
+  }
+
+  function testParentCanAddMultipleChildren() public {
+    string memory childNameOne = "Willy";
+    string memory childNameTwo = "Owen";
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, true, false, true);
+    emit ChildAdded(childNameOne, CHILD_ONE);
+    kiddoPerks.addChild(childNameOne, CHILD_ONE);
+
+    vm.prank(PARENT);
+    vm.expectEmit(true, true, false, true);
+    emit ChildAdded(childNameTwo, CHILD_TWO);
+    kiddoPerks.addChild(childNameTwo, CHILD_TWO);
+
+    assertEq(kiddoPerks.s_activeChildren(), 2);
+    assertEq(kiddoPerks.s_childrenNextId(), 2);
+    (, string memory nameOne,,) = kiddoPerks.s_children(0);
+    assertEq(nameOne, childNameOne);
+    (, string memory nameTwo,,) = kiddoPerks.s_children(1);
+    assertEq(nameTwo, childNameTwo);
   }
 
   event ChildRemoved(uint256 id);
@@ -232,6 +258,17 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removeChild(0);
   }
 
+  function testRevertsIfNoParentTriesToRemoveAChild() public withChildCreated {
+    uint256 childId = 0;
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        Ownable.OwnableUnauthorizedAccount.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.removeChild(childId);
+  }
+
   /**
    * Modifiers
    */
@@ -240,6 +277,14 @@ contract KiddoPerksTest is Test {
 
     vm.prank(PARENT);
     kiddoPerks.createTask(taskName, SMALL_REQUIRED_TOKENS_AMOUNT);
+    _;
+  }
+
+  modifier withChildCreated() {
+    string memory childName = "Mickael";
+
+    vm.prank(PARENT);
+    kiddoPerks.addChild(childName, CHILD_ONE);
     _;
   }
 }

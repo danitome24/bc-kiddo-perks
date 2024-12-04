@@ -17,6 +17,7 @@ contract KiddoPerks is Ownable {
   error KiddoPerks__TaskAlreadyRemoved(uint256 id);
   error KiddoPerks__TaskNotFound(uint256 id);
   error KiddoPerks__CannotCompleteRemovedTask(uint256 id);
+  error KiddoPerks__ChildAlreadyRemoved(uint256 id);
 
   IERC20 token;
   address public parent;
@@ -45,8 +46,10 @@ contract KiddoPerks is Ownable {
   }
 
   struct Child {
+    uint256 id;
     string name;
     address childAddr;
+    bool removed;
   }
 
   constructor(
@@ -160,7 +163,7 @@ contract KiddoPerks is Ownable {
    * Children
    */
   function addChild(string memory name, address childAddr) public onlyOwner {
-    Child memory newChild = Child(name, childAddr);
+    Child memory newChild = Child(s_childrenNextId, name, childAddr, false);
     s_children[s_childrenNextId] = newChild;
     s_childrenNextId++;
     s_activeChildren++;
@@ -171,7 +174,14 @@ contract KiddoPerks is Ownable {
   function removeChild(
     uint256 id
   ) public onlyOwner {
-    delete s_children[id];
+    if (id >= s_childrenNextId) {
+      revert KiddoPerks__NotValidId(id);
+    }
+    if (s_children[id].removed) {
+      revert KiddoPerks__ChildAlreadyRemoved(id);
+    }
+
+    s_children[id].removed = true;
     s_activeChildren--;
 
     emit ChildRemoved(id);
@@ -182,7 +192,9 @@ contract KiddoPerks is Ownable {
 
     uint256 index;
     for (uint256 i = 0; i < s_childrenNextId; i++) {
-      allChildren[index] = s_children[i];
+      if (!s_children[i].removed) {
+        allChildren[index] = s_children[i];
+      }
     }
 
     return allChildren;
