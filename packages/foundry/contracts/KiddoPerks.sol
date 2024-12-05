@@ -6,7 +6,7 @@ import { KDOToken } from "./KDOToken.sol";
 
 contract KiddoPerks is Ownable {
   event TaskCreated(string title);
-  event TaskCompleted(string title, address by);
+  event TaskCompleted(address indexed by, string title);
   event PerkCreated(string title, uint256 tokensRequired);
   event ChildAdded(string name, address childAddr);
   event ChildRemoved(uint256 id);
@@ -33,7 +33,7 @@ contract KiddoPerks is Ownable {
 
   mapping(uint256 => Task) public s_tasks;
   uint256 public s_taskNextId = 0;
-  mapping(uint256 => mapping(address => bool)) public s_completedTasksByUser;
+  mapping(address => mapping(uint256 => bool)) public s_completedTasksByUser;
 
   struct Task {
     uint256 id;
@@ -103,8 +103,8 @@ contract KiddoPerks is Ownable {
     if (taskCompleted.removed) {
       revert KiddoPerks__CannotCompleteRemovedTask(taskId);
     }
-    s_completedTasksByUser[taskId][by] = true;
-    emit TaskCompleted(taskCompleted.title, by);
+    s_completedTasksByUser[by][taskId] = true;
+    emit TaskCompleted(by, taskCompleted.title);
 
     token.mint(by, taskCompleted.tokensReward);
     emit TokenMinted(by, taskCompleted.tokensReward);
@@ -130,7 +130,7 @@ contract KiddoPerks is Ownable {
     uint256 taskId,
     address by
   ) public view returns (bool) {
-    return s_completedTasksByUser[taskId][by];
+    return s_completedTasksByUser[by][taskId];
   }
 
   function getAllTasks() public view returns (Task[] memory) {
