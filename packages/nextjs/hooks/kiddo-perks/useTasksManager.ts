@@ -58,7 +58,7 @@ export const useTaskManager = () => {
       fromBlock: 0n,
       watch: true,
       filters: { by: by },
-    });
+    }); // TODO: solve lint error, cannot use custom hook here!
 
     const completedTaskIds = new Set<number>(events?.map((event: any) => Number(event.args.taskId)) || []);
     const completedTasks = tasks.filter(task => completedTaskIds.has(task.id));
