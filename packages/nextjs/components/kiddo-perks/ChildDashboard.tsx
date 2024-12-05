@@ -1,20 +1,12 @@
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
 import { useAccount } from "wagmi";
-import { useTokenBalance } from "~~/hooks/kiddo-perks";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useTaskManager, useTokenBalance } from "~~/hooks/kiddo-perks";
 
 export const ChildDashboard = () => {
   const account = useAccount();
+  const { fetchTasksBy } = useTaskManager();
   const { rawTokenBalance, formattedTokenBalance } = useTokenBalance(account.address || "");
-
-  const { data: taskNextId } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "s_taskNextId",
-  });
-
-  const completedTasks = 1; //TODO temporary number.
-  const totalTasks = taskNextId ? Number(taskNextId) : 0;
-  const pendingTasks = totalTasks - completedTasks;
+  const { completedTasksNumber, pendingTasksNumber } = fetchTasksBy(account.address || "");
 
   return (
     <div className="p-6 min-h-screen">
@@ -29,7 +21,7 @@ export const ChildDashboard = () => {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TasksProgress completed={completedTasks} pending={pendingTasks} />
+        <TasksProgress completed={completedTasksNumber} pending={pendingTasksNumber} />
 
         <TokensBalance />
       </div>

@@ -26,3 +26,9 @@ export type Activity = {
   id: number;
   title: string;
 };
+
+export type CompletedTaskEvent = {
+  by: string;
+  completedTasksNumber: number;
+  pendingTasksNumber: number;
+};

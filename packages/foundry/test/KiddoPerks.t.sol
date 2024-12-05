@@ -82,13 +82,13 @@ contract KiddoPerksTest is Test {
     kiddoPerks.completeTask(0, CHILD_ONE);
   }
 
-  event TaskCompleted(address indexed by, string title);
+  event TaskCompleted(address indexed by, string title, uint256 taskId);
   event TokenMinted(address by, uint256 tokenReward);
 
   function testParentCanMarkTaskAsCompleted() public withTaskCreated {
     vm.prank(PARENT);
     vm.expectEmit(true, true, false, true);
-    emit TaskCompleted(CHILD_ONE, "Clean up room");
+    emit TaskCompleted(CHILD_ONE, "Clean up room", 0);
     vm.expectEmit(true, true, false, true);
     emit TokenMinted(CHILD_ONE, SMALL_REQUIRED_TOKENS_AMOUNT);
     kiddoPerks.completeTask(0, CHILD_ONE);

@@ -6,7 +6,7 @@ import { KDOToken } from "./KDOToken.sol";
 
 contract KiddoPerks is Ownable {
   event TaskCreated(string title);
-  event TaskCompleted(address indexed by, string title);
+  event TaskCompleted(address indexed by, string title, uint256 taskId);
   event PerkCreated(string title, uint256 tokensRequired);
   event ChildAdded(string name, address childAddr);
   event ChildRemoved(uint256 id);
@@ -104,7 +104,7 @@ contract KiddoPerks is Ownable {
       revert KiddoPerks__CannotCompleteRemovedTask(taskId);
     }
     s_completedTasksByUser[by][taskId] = true;
-    emit TaskCompleted(by, taskCompleted.title);
+    emit TaskCompleted(by, taskCompleted.title, taskId);
 
     token.mint(by, taskCompleted.tokensReward);
     emit TokenMinted(by, taskCompleted.tokensReward);

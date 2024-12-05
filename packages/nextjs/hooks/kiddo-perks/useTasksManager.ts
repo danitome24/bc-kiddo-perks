@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useScaffoldReadContract, useScaffoldWriteContract } from "../scaffold-eth";
-import { Child, Task } from "~~/types/kiddoPerks";
+import { useScaffoldEventHistory, useScaffoldReadContract, useScaffoldWriteContract } from "../scaffold-eth";
+import { Child, CompletedTaskEvent, Task } from "~~/types/kiddoPerks";
 import { notification } from "~~/utils/scaffold-eth";
 
 export const useTaskManager = () => {
@@ -50,5 +50,28 @@ export const useTaskManager = () => {
     notification.success(`Task completed by: ${by.name}`);
   };
 
-  return { tasks, addTask, removeTask, completeTaskBy };
+  const fetchTasksBy = (by: string): CompletedTaskEvent => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { data: events } = useScaffoldEventHistory({
+      contractName: "KiddoPerks",
+      eventName: "TaskCompleted",
+      fromBlock: 0n,
+      watch: true,
+      filters: { by: by },
+    });
+
+    const completedTaskIds = new Set<number>(events?.map((event: any) => Number(event.args.taskId)) || []);
+    const completedTasks = tasks.filter(task => completedTaskIds.has(task.id));
+    const pendingTasks = tasks.filter(task => !completedTaskIds.has(task.id));
+
+    const completedTasksEvent: CompletedTaskEvent = {
+      by,
+      completedTasksNumber: completedTasks.length,
+      pendingTasksNumber: pendingTasks.length,
+    };
+
+    return completedTasksEvent;
+  };
+
+  return { tasks, addTask, removeTask, completeTaskBy, fetchTasksBy };
 };

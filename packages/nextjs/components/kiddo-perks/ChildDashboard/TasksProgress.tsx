@@ -4,7 +4,8 @@ type TasksProgressProps = {
 };
 
 export const TasksProgress = ({ completed, pending }: TasksProgressProps) => {
-  const progressInPercentage = (completed / (completed + pending)) * 100;
+  const totalTasks = completed + pending;
+  const progressInPercentage = (completed / totalTasks) * 100;
 
   return (
     <section className="bg-primary shadow-md rounded-lg p-4">
