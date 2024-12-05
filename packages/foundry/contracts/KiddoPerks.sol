@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { KDOToken } from "./KDOToken.sol";
 
 contract KiddoPerks is Ownable {
   event TaskCreated(string title);
@@ -13,6 +13,7 @@ contract KiddoPerks is Ownable {
   event ParentUpdated(address newParentAddress);
   event TaskRemoved(uint256 id);
   event PerkRemoved(uint256 id);
+  event TokenMinted(address by, uint256 tokensReward);
 
   error KiddoPerks__NotValidId(uint256 id);
   error KiddoPerks__TaskAlreadyRemoved(uint256 id);
@@ -21,7 +22,7 @@ contract KiddoPerks is Ownable {
   error KiddoPerks__ChildAlreadyRemoved(uint256 id);
   error KiddoPerks__PerkAlreadyRemoved(uint256 id);
 
-  IERC20 token;
+  KDOToken token;
   address public parent;
 
   mapping(uint256 => Child) public s_children;
@@ -56,7 +57,7 @@ contract KiddoPerks is Ownable {
   }
 
   constructor(
-    IERC20 _token
+    KDOToken _token
   ) Ownable(msg.sender) {
     setParent(msg.sender);
     token = _token;
@@ -98,13 +99,15 @@ contract KiddoPerks is Ownable {
     if (taskId >= s_taskNextId) {
       revert KiddoPerks__TaskNotFound(taskId);
     }
-    if (s_tasks[taskId].removed) {
+    Task memory taskCompleted = s_tasks[taskId];
+    if (taskCompleted.removed) {
       revert KiddoPerks__CannotCompleteRemovedTask(taskId);
     }
     s_completedTasksByUser[taskId][by] = true;
-    emit TaskCompleted(s_tasks[taskId].title, by);
+    emit TaskCompleted(taskCompleted.title, by);
 
-    // TODO: reward
+    token.mint(by, taskCompleted.tokensReward);
+    emit TokenMinted(by, taskCompleted.tokensReward);
   }
 
   function removeTask(

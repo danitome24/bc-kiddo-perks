@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     KDOToken: {
-      address: "0x700b6a60ce7eaaea56f065753d8dcb9653dbad35",
+      address: "0xe1aa25618fa0c7a1cfdab5d6b456af611873b629",
       abi: [
         {
           type: "constructor",
@@ -450,7 +450,7 @@ const deployedContracts = {
       },
     },
     KiddoPerks: {
-      address: "0xb19b36b1456e65e3a6d514d3f715f204bd59f431",
+      address: "0xe1da8919f262ee86f9be05059c9280142cf23f48",
       abi: [
         {
           type: "constructor",
@@ -458,7 +458,7 @@ const deployedContracts = {
             {
               name: "_token",
               type: "address",
-              internalType: "contract IERC20",
+              internalType: "contract KDOToken",
             },
           ],
           stateMutability: "nonpayable",
@@ -1184,6 +1184,25 @@ const deployedContracts = {
           inputs: [
             {
               name: "id",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "TokenMinted",
+          inputs: [
+            {
+              name: "by",
+              type: "address",
+              indexed: false,
+              internalType: "address",
+            },
+            {
+              name: "tokensReward",
               type: "uint256",
               indexed: false,
               internalType: "uint256",

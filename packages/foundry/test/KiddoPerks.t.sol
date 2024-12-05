@@ -21,6 +21,7 @@ contract KiddoPerksTest is Test {
 
     kiddoPerks = new KiddoPerks(kdoToken);
     kiddoPerks.setParent(PARENT);
+    kdoToken.transferOwnership(address(kiddoPerks));
   }
 
   /////////////////////
@@ -82,11 +83,14 @@ contract KiddoPerksTest is Test {
   }
 
   event TaskCompleted(string title, address by);
+  event TokenMinted(address by, uint256 tokenReward);
 
   function testParentCanMarkTaskAsCompleted() public withTaskCreated {
     vm.prank(PARENT);
     vm.expectEmit(true, true, false, true);
     emit TaskCompleted("Clean up room", CHILD_ONE);
+    vm.expectEmit(true, true, false, true);
+    emit TokenMinted(CHILD_ONE, SMALL_REQUIRED_TOKENS_AMOUNT);
     kiddoPerks.completeTask(0, CHILD_ONE);
 
     bool isCompleted = kiddoPerks.isTaskCompletedBy(0, CHILD_ONE);
