@@ -14,6 +14,7 @@ contract KiddoPerks is Ownable {
   event TaskRemoved(uint256 id);
   event PerkRemoved(uint256 id);
   event TokenMinted(address by, uint256 tokensReward);
+  event PerkRedeemed(uint256 perkId, address by);
 
   error KiddoPerks__NotValidId(uint256 id);
   error KiddoPerks__TaskAlreadyRemoved(uint256 id);
@@ -21,6 +22,9 @@ contract KiddoPerks is Ownable {
   error KiddoPerks__CannotCompleteRemovedTask(uint256 id);
   error KiddoPerks__ChildAlreadyRemoved(uint256 id);
   error KiddoPerks__PerkAlreadyRemoved(uint256 id);
+  error KiddoPerks__NotEnoughTokenBalance(
+    uint256 id, address by, uint256 tokensRequired
+  );
 
   KDOToken token;
   address public parent;
@@ -29,6 +33,8 @@ contract KiddoPerks is Ownable {
   uint256 public s_childrenNextId = 0;
 
   mapping(uint256 => Perk) public s_perks;
+  mapping(uint256 perkId => mapping(address by => bool isRedeemed))
+    s_perksRedeemedBy;
   uint256 public s_perksNextId = 0;
 
   mapping(uint256 => Task) public s_tasks;
@@ -185,6 +191,25 @@ contract KiddoPerks is Ownable {
     }
 
     return allPerks;
+  }
+
+  function redeemPerk(
+    uint256 perkId
+  ) public {
+    Perk memory perk = s_perks[perkId];
+    uint256 userTokenBalance = token.balanceOf(msg.sender);
+    if (userTokenBalance < perk.tokensRequired) {
+      revert KiddoPerks__NotEnoughTokenBalance(
+        perkId, msg.sender, perk.tokensRequired
+      );
+    }
+
+    bool sent =
+      token.transferFrom(msg.sender, address(this), perk.tokensRequired);
+    if (!sent) {
+      revert("Error on token transfer");
+    }
+    emit PerkRedeemed(perkId, msg.sender);
   }
 
   /**

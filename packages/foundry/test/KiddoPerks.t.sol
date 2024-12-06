@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import { Test } from "forge-std/Test.sol";
+import { Test, console } from "forge-std/Test.sol";
 import { KiddoPerks } from "../contracts/KiddoPerks.sol";
 import { KDOToken } from "../contracts/KDOToken.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
@@ -251,6 +251,47 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removePerk(perkId);
 
     assertTrue(kiddoPerks.perkBy(perkId).removed);
+  }
+
+  event PerkRedeemed(uint256 perkId, address by);
+
+  function testChildCanRedeemPerk() public withPerkCreated {
+    uint256 perkId = 0;
+    uint256 initialChildBalance = 5 * 10 ** 18;
+    uint256 perkTokensRequired = 2 * 10 ** 18;
+    vm.prank(address(kiddoPerks));
+    kdoToken.mint(CHILD_ONE, initialChildBalance);
+
+    vm.prank(CHILD_ONE);
+    kdoToken.approve(address(kiddoPerks), perkTokensRequired);
+
+    vm.expectEmit(true, true, false, true);
+    emit PerkRedeemed(perkId, CHILD_ONE);
+    vm.prank(CHILD_ONE);
+    kiddoPerks.redeemPerk(perkId);
+
+    uint256 userFinalBalance = kdoToken.balanceOf(CHILD_ONE);
+    assertEq(initialChildBalance, perkTokensRequired + userFinalBalance);
+  }
+
+  function testRevertsOnRedeemWhenChildHasNotEnoughTokenBalance()
+    public
+    withPerkCreated
+  {
+    uint256 perkId = 0;
+    vm.prank(address(kiddoPerks));
+    kdoToken.mint(CHILD_ONE, 1 * 10 ** 18);
+
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NotEnoughTokenBalance.selector,
+        perkId,
+        CHILD_ONE,
+        2 * 10 ** 18
+      )
+    );
+    kiddoPerks.redeemPerk(perkId);
   }
 
   /////////////////////
