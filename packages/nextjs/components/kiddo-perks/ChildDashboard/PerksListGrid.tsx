@@ -1,11 +1,24 @@
 import { usePerksManager } from "~~/hooks/kiddo-perks";
+import { useDeployedContractInfo, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { Perk } from "~~/types/kiddoPerks";
 
 type PerksListGridProps = {
   childTokens: number;
 };
 
 export const PerksListGrid = ({ childTokens }: PerksListGridProps) => {
-  const { perks } = usePerksManager();
+  const { writeContractAsync: writeTokenContractAsync } = useScaffoldWriteContract("KDOToken");
+  const { data: kiddoPerksContractInfo } = useDeployedContractInfo("KiddoPerks");
+
+  const { perks, redeemPerk } = usePerksManager();
+
+  const handleRedeemPerk = async (perk: Perk) => {
+    await writeTokenContractAsync({
+      functionName: "approve",
+      args: [kiddoPerksContractInfo?.address, BigInt(perk.tokensRequired)],
+    });
+    await redeemPerk(perk.id);
+  };
 
   if (perks.length === 0) {
     return (
@@ -28,10 +41,12 @@ export const PerksListGrid = ({ childTokens }: PerksListGridProps) => {
               <h3 className="text-sm font-medium ">{perk.title}</h3>
               <p className="text-xs text-gray-600">Cost: {Number(perk.tokensRequired) / 10 ** 18} KDO</p>
             </div>
-            {perk.redeemedBy ? (
+            {perk.isRedeemed ? (
               <span className="text-xs bg-base px-2 py-1 rounded-full">Redeemed</span>
             ) : childTokens >= Number(perk.tokensRequired) ? (
-              <button className="btn btn-primary">Redeem</button>
+              <button onClick={() => handleRedeemPerk(perk)} className="btn btn-primary">
+                Redeem
+              </button>
             ) : (
               <span className="text-xs bg-accent text-accent-content px-2 py-1 rounded-full">Not Enough Points</span>
             )}

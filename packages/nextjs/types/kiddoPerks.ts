@@ -11,7 +11,7 @@ export type Perk = {
   title: string;
   tokensRequired: bigint;
   removed: boolean;
-  redeemedBy?: string[];
+  isRedeemed: boolean;
 };
 
 export type Task = {

@@ -22,6 +22,7 @@ export const usePerksManager = () => {
               title: perk.title,
               removed: perk.removed,
               tokensRequired: perk.tokensRequired,
+              isRedeemed: false,
             } as Perk),
         );
 
@@ -34,7 +35,7 @@ export const usePerksManager = () => {
       functionName: "createPerk",
       args: [title, BigInt(tokensRequired)],
     });
-    setPerks([...perks, { id: perks.length + 1, title, removed: false, tokensRequired }]);
+    setPerks([...perks, { id: perks.length + 1, title, removed: false, tokensRequired, isRedeemed: false }]);
   };
 
   const removePerk = async (perkId: number) => {
@@ -45,5 +46,23 @@ export const usePerksManager = () => {
     setPerks(perks.filter(perk => perk.id !== perkId));
   };
 
-  return { perks, addPerk, removePerk };
+  const redeemPerk = async (perkId: number) => {
+    await writeKiddoPerksContract({
+      functionName: "redeemPerk",
+      args: [BigInt(perkId)],
+    });
+
+    const updatedPerks = perks.map(perk => {
+      if (perk.id == perkId) {
+        return {
+          ...perk,
+          isRedeemed: true,
+        };
+      }
+      return perk;
+    });
+    setPerks(updatedPerks);
+  };
+
+  return { perks, addPerk, removePerk, redeemPerk };
 };
