@@ -25,6 +25,7 @@ contract KiddoPerks is Ownable {
   error KiddoPerks__NotEnoughTokenBalance(
     uint256 id, address by, uint256 tokensRequired
   );
+  error KiddoPerks__PerkAlreadyRedemmed(uint256 id, address by);
 
   KDOToken token;
   address public parent;
@@ -203,12 +204,16 @@ contract KiddoPerks is Ownable {
         perkId, msg.sender, perk.tokensRequired
       );
     }
+    if (s_perksRedeemedBy[perkId][msg.sender]) {
+      revert KiddoPerks__PerkAlreadyRedemmed(perkId, msg.sender);
+    }
 
     bool sent =
       token.transferFrom(msg.sender, address(this), perk.tokensRequired);
     if (!sent) {
       revert("Error on token transfer");
     }
+    s_perksRedeemedBy[perkId][msg.sender] = true;
     emit PerkRedeemed(perkId, msg.sender);
   }
 

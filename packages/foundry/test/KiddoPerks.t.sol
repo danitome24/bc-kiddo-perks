@@ -274,6 +274,30 @@ contract KiddoPerksTest is Test {
     assertEq(initialChildBalance, perkTokensRequired + userFinalBalance);
   }
 
+  function testChildCannotReddemMoreThanOnceAPerk() public withPerkCreated {
+    uint256 perkId = 0;
+    uint256 initialChildBalance = 5 * 10 ** 18;
+    uint256 perkTokensRequired = 2 * 10 ** 18;
+    vm.prank(address(kiddoPerks));
+    kdoToken.mint(CHILD_ONE, initialChildBalance);
+
+    vm.prank(CHILD_ONE);
+    kdoToken.approve(address(kiddoPerks), perkTokensRequired);
+
+    vm.expectEmit(true, true, false, true);
+    emit PerkRedeemed(perkId, CHILD_ONE);
+    vm.prank(CHILD_ONE);
+    kiddoPerks.redeemPerk(perkId);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__PerkAlreadyRedemmed.selector, perkId, CHILD_ONE
+      )
+    );
+    vm.prank(CHILD_ONE);
+    kiddoPerks.redeemPerk(perkId);
+  }
+
   function testRevertsOnRedeemWhenChildHasNotEnoughTokenBalance()
     public
     withPerkCreated
