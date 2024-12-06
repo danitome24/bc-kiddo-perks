@@ -34,7 +34,7 @@ contract KiddoPerks is Ownable {
   uint256 public s_childrenNextId = 0;
 
   mapping(uint256 => Perk) public s_perks;
-  mapping(uint256 perkId => mapping(address by => bool isRedeemed))
+  mapping(uint256 perkId => mapping(address by => bool isRedeemed)) public
     s_perksRedeemedBy;
   uint256 public s_perksNextId = 0;
 
