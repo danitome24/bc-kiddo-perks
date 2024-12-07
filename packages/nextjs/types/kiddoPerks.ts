@@ -23,8 +23,10 @@ export type Task = {
 };
 
 export type Activity = {
-  id: number;
+  id: string;
   title: string;
+  blockNumber: number;
+  // timestamp: string;
 };
 
 export type CompletedTaskEvent = {

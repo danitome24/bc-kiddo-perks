@@ -1,11 +1,6 @@
 import { ChildrenSummary, ContentHeader, PerksSummary, RecentActivitySummary } from "./";
-import { Activity } from "~~/types/kiddoPerks";
 
-type DashboardProps = {
-  activities: Activity[];
-};
-
-export const ParentDashboard = ({ activities }: DashboardProps) => {
+export const ParentDashboard = () => {
   return (
     <div className="px-8 py-16">
       <ContentHeader
@@ -18,7 +13,7 @@ export const ParentDashboard = ({ activities }: DashboardProps) => {
         <PerksSummary />
       </div>
 
-      <RecentActivitySummary activities={activities} />
+      <RecentActivitySummary />
     </div>
   );
 };
