@@ -50,7 +50,7 @@ export const RecentActivitySummary = () => {
     }));
 
     setActivities([...perkRedeemedActivities, ...tokenMintedActivities].sort((a, b) => a.blockNumber + b.blockNumber));
-  }, [perkRedeemedEvents, tokenMintedEvents]);
+  }, [perkRedeemedEvents, tokenMintedEvents, children, perks]);
 
   return (
     <section className="mt-6">
