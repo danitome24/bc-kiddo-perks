@@ -1,38 +1,18 @@
 import Link from "next/link";
 import { ChildSummaryCard } from "./ChildSummaryCard";
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
-import { Child, Task } from "~~/types/kiddoPerks";
+import { useChildManager, useTaskManager } from "~~/hooks/kiddo-perks";
 
 export const ChildrenSummary = () => {
-  const { data: childrenData } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllChildren",
-  });
-
-  const activeChildren: Child[] = childrenData
-    ? childrenData
-        .filter(child => child.removed == false)
-        .map(child => ({
-          id: Number(child.id),
-          name: child.name,
-          address: child.childAddr as `0x${string}`,
-          removed: child.removed,
-          avatar: "childAvatar.png",
-        }))
-    : [];
-
-  const { data: tasks } = useScaffoldReadContract({
-    contractName: "KiddoPerks",
-    functionName: "getAllTasks",
-  }) as { data: Task[] | undefined };
+  const { children } = useChildManager();
+  const { tasks } = useTaskManager();
 
   const totalTasks = tasks?.filter(tasks => tasks.removed == false).length as number;
 
-  if (activeChildren == undefined) {
+  if (children == undefined) {
     return <section>Loading...</section>;
   }
 
-  if (activeChildren.length === 0) {
+  if (children.length === 0) {
     return (
       <section>
         <h2 className="text-lg font-semibold text-primary-content mb-4">Children Status</h2>
@@ -52,7 +32,7 @@ export const ChildrenSummary = () => {
     <section>
       <h2 className="text-lg font-semibold text-primary-content mb-4">Children Status</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {activeChildren.map(child => (
+        {children.map(child => (
           <ChildSummaryCard key={child.id} child={child} totalTasks={totalTasks} />
         ))}
       </div>

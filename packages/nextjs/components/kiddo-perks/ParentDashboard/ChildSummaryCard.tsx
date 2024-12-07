@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useTokenBalance } from "~~/hooks/kiddo-perks";
+import { useTaskManager, useTokenBalance } from "~~/hooks/kiddo-perks";
 import { Child } from "~~/types/kiddoPerks";
 
 type ChildSummaryCardProps = {
@@ -8,8 +8,9 @@ type ChildSummaryCardProps = {
 };
 
 export const ChildSummaryCard = ({ child, totalTasks }: ChildSummaryCardProps) => {
-  const completedTasks = 0;
   const { formattedTokenBalance } = useTokenBalance(child.address);
+  const { fetchTasksBy } = useTaskManager();
+  const taskByChild = fetchTasksBy(child.address);
 
   return (
     <div className="card bg-primary shadow-xl">
@@ -20,7 +21,7 @@ export const ChildSummaryCard = ({ child, totalTasks }: ChildSummaryCardProps) =
         </h2>
         <p className="text-lg text-right m-0">{formattedTokenBalance} KDO</p>
         <p className="m-0">
-          Tasks completed: {completedTasks}/{totalTasks?.toString()}
+          Tasks completed: {taskByChild.completedTasksNumber}/{totalTasks?.toString()}
         </p>
 
         <div className="card-actions justify-end">
