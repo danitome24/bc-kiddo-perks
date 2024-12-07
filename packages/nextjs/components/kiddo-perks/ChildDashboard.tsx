@@ -22,12 +22,9 @@ export const ChildDashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TasksProgress completed={completedTasksNumber} pending={pendingTasksNumber} />
-
-        <TokensBalance />
+        <TokensBalance balanceOf={account?.address || ""} />
       </div>
-
       <TasksList />
-
       <PerksListGrid childTokens={rawTokenBalance} />
     </div>
   );

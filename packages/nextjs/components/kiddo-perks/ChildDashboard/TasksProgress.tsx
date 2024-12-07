@@ -10,7 +10,7 @@ export const TasksProgress = ({ completed, pending }: TasksProgressProps) => {
   return (
     <section className="bg-primary shadow-md rounded-lg p-4">
       <h2 className="text-lg font-semibold mb-4">Your Progress</h2>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-10">
         <div>
           <p className="text-sm ">Tasks Completed</p>
           <p className="text-xl font-bold text-success">{completed}</p>

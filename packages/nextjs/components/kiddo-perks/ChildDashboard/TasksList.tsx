@@ -1,3 +1,4 @@
+import { TaskCard } from "./TaskCard";
 import { useTaskManager } from "~~/hooks/kiddo-perks/useTasksManager";
 
 export const TasksList = () => {
@@ -19,13 +20,7 @@ export const TasksList = () => {
       <h2 className="text-xl font-semibold mb-4">Your Tasks</h2>
       <div className="bg-primary shadow-md rounded-lg divide-y divide-base">
         {tasks.map(task => (
-          <div key={task.id} className="p-4 flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-medium">{task.title}</h3>
-              <p className="text-sm font-semibold text-warning">Pending</p>
-            </div>
-            <button className="btn btn-success text-sm text-success-content hover:underline">Mark as Done</button>
-          </div>
+          <TaskCard key={task.id} task={task} />
         ))}
       </div>
     </section>

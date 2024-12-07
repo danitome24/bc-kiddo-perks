@@ -8,6 +8,10 @@ export const useTokenBalance = (address: Address) => {
     args: [address],
   });
 
+  if (userTokenBalance == undefined) {
+    return { rawTokenBalance: 0, formattedTokenBalance: 0 };
+  }
+
   const rawTokenBalance = Number(userTokenBalance);
   const formattedTokenBalance = Number(userTokenBalance) / 10 ** 18;
 
