@@ -26,11 +26,13 @@ contract KiddoPerks is Ownable {
     uint256 id, address by, uint256 tokensRequired
   );
   error KiddoPerks__PerkAlreadyRedemmed(uint256 id, address by);
+  error KiddoPerks__NoValidChild(address childAddr);
 
   KDOToken token;
   address public parent;
 
   mapping(uint256 => Child) public s_children;
+  mapping(address child => bool isActive) s_validChildAddresses;
   uint256 public s_childrenNextId = 0;
 
   mapping(uint256 => Perk) public s_perks;
@@ -136,7 +138,7 @@ contract KiddoPerks is Ownable {
   function isTaskCompletedBy(
     uint256 taskId,
     address by
-  ) public view returns (bool) {
+  ) public view onlyValidChild(by) returns (bool) {
     return s_completedTasksByUser[by][taskId];
   }
 
@@ -196,7 +198,7 @@ contract KiddoPerks is Ownable {
 
   function redeemPerk(
     uint256 perkId
-  ) public {
+  ) public onlyValidChild(msg.sender) {
     Perk memory perk = s_perks[perkId];
     uint256 userTokenBalance = token.balanceOf(msg.sender);
     if (userTokenBalance < perk.tokensRequired) {
@@ -223,6 +225,7 @@ contract KiddoPerks is Ownable {
   function addChild(string memory name, address childAddr) public onlyOwner {
     Child memory newChild = Child(s_childrenNextId, name, childAddr, false);
     s_children[s_childrenNextId] = newChild;
+    s_validChildAddresses[childAddr] = true;
     s_childrenNextId++;
 
     emit ChildAdded(name, childAddr);
@@ -245,6 +248,7 @@ contract KiddoPerks is Ownable {
     }
 
     s_children[id].removed = true;
+    s_validChildAddresses[s_children[id].childAddr] = false;
 
     emit ChildRemoved(id);
   }
@@ -257,5 +261,14 @@ contract KiddoPerks is Ownable {
     }
 
     return allChildren;
+  }
+
+  modifier onlyValidChild(
+    address childAddress
+  ) {
+    if (s_validChildAddresses[childAddress] == false) {
+      revert KiddoPerks__NoValidChild(childAddress);
+    }
+    _;
   }
 }

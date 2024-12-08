@@ -85,7 +85,11 @@ contract KiddoPerksTest is Test {
   event TaskCompleted(address indexed by, string title, uint256 taskId);
   event TokenMinted(address by, uint256 tokenReward);
 
-  function testParentCanMarkTaskAsCompleted() public withTaskCreated {
+  function testParentCanMarkTaskAsCompleted()
+    public
+    withTaskCreated
+    withChildCreated
+  {
     vm.prank(PARENT);
     vm.expectEmit(true, true, false, true);
     emit TaskCompleted(CHILD_ONE, "Clean up room", 0);
@@ -255,7 +259,7 @@ contract KiddoPerksTest is Test {
 
   event PerkRedeemed(uint256 perkId, address by);
 
-  function testChildCanRedeemPerk() public withPerkCreated {
+  function testChildCanRedeemPerk() public withPerkCreated withChildCreated {
     uint256 perkId = 0;
     uint256 initialChildBalance = 5 * 10 ** 18;
     uint256 perkTokensRequired = 2 * 10 ** 18;
@@ -274,7 +278,11 @@ contract KiddoPerksTest is Test {
     assertEq(initialChildBalance, perkTokensRequired + userFinalBalance);
   }
 
-  function testChildCannotReddemMoreThanOnceAPerk() public withPerkCreated {
+  function testChildCannotReddemMoreThanOnceAPerk()
+    public
+    withPerkCreated
+    withChildCreated
+  {
     uint256 perkId = 0;
     uint256 initialChildBalance = 5 * 10 ** 18;
     uint256 perkTokensRequired = 2 * 10 ** 18;
@@ -301,10 +309,13 @@ contract KiddoPerksTest is Test {
   function testRevertsOnRedeemWhenChildHasNotEnoughTokenBalance()
     public
     withPerkCreated
+    withChildCreated
   {
     uint256 perkId = 0;
+    uint256 tokensToMint = 1 * 10 ** 18;
+    uint256 perkTokensRequired = 2 * 10 ** 18;
     vm.prank(address(kiddoPerks));
-    kdoToken.mint(CHILD_ONE, 1 * 10 ** 18);
+    kdoToken.mint(CHILD_ONE, tokensToMint);
 
     vm.prank(CHILD_ONE);
     vm.expectRevert(
@@ -312,15 +323,55 @@ contract KiddoPerksTest is Test {
         KiddoPerks.KiddoPerks__NotEnoughTokenBalance.selector,
         perkId,
         CHILD_ONE,
-        2 * 10 ** 18
+        perkTokensRequired
       )
     );
     kiddoPerks.redeemPerk(perkId);
   }
 
+  function testRevertIfNoValidChildTriesToRedeemPerk() public withPerkCreated {
+    uint256 perkId = 0;
+    uint256 tokensToMint = 1 * 10 ** 18;
+
+    vm.prank(address(kiddoPerks));
+    kdoToken.mint(CHILD_TWO, tokensToMint);
+
+    vm.prank(CHILD_TWO);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NoValidChild.selector, CHILD_TWO
+      )
+    );
+    kiddoPerks.redeemPerk(perkId);
+  }
+
+  function testRevertIfRemovedChildTriesToRedeemPerk()
+    public
+    withPerkCreated
+    withChildCreated
+  {
+    uint256 perkId = 0;
+    uint256 childId = 0;
+    uint256 tokensToMint = 1 * 10 ** 18;
+
+    vm.prank(address(kiddoPerks));
+    kdoToken.mint(CHILD_ONE, tokensToMint);
+
+    vm.prank(PARENT);
+    kiddoPerks.removeChild(childId);
+
+    vm.prank(CHILD_ONE);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NoValidChild.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.redeemPerk(perkId);
+  }
   /////////////////////
   //// Child test
   /////////////////////
+
   function testRevertsIfNoParentTriesToAddChild() public withTaskCreated {
     string memory childName = "Willy";
     vm.prank(CHILD_ONE);
