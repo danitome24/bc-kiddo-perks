@@ -104,7 +104,10 @@ contract KiddoPerks is Ownable {
     return s_tasks[id];
   }
 
-  function completeTask(uint256 taskId, address by) public onlyOwner {
+  function completeTask(
+    uint256 taskId,
+    address by
+  ) public onlyOwner onlyValidChild(by) {
     if (taskId >= s_taskNextId) {
       revert KiddoPerks__TaskNotFound(taskId);
     }
@@ -138,7 +141,7 @@ contract KiddoPerks is Ownable {
   function isTaskCompletedBy(
     uint256 taskId,
     address by
-  ) public view onlyValidChild(by) returns (bool) {
+  ) public view returns (bool) {
     return s_completedTasksByUser[by][taskId];
   }
 

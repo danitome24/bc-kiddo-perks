@@ -102,7 +102,11 @@ contract KiddoPerksTest is Test {
     assertTrue(isCompleted);
   }
 
-  function testRevertsIfCompletedTaskIdNotExists() public withTaskCreated {
+  function testRevertsIfCompletedTaskIdNotExists()
+    public
+    withTaskCreated
+    withChildCreated
+  {
     uint256 taskId = 4;
     vm.prank(PARENT);
     vm.expectRevert(
@@ -113,7 +117,11 @@ contract KiddoPerksTest is Test {
     kiddoPerks.completeTask(taskId, CHILD_ONE);
   }
 
-  function testRevertsIfCompleteARemovedTask() public withTaskCreated {
+  function testRevertsIfCompleteARemovedTask()
+    public
+    withTaskCreated
+    withChildCreated
+  {
     uint256 taskId = 0;
 
     vm.prank(PARENT);
@@ -176,6 +184,40 @@ contract KiddoPerksTest is Test {
     kiddoPerks.removeTask(id);
 
     assertTrue(kiddoPerks.taskBy(id).removed);
+  }
+
+  function testRevertsIfNoValidChildTriesToCompleteTask()
+    public
+    withTaskCreated
+  {
+    uint256 taskId = 0;
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NoValidChild.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.completeTask(taskId, CHILD_ONE);
+  }
+
+  function testRevertsIfRemovedChildTriesToCompleteTask()
+    public
+    withTaskCreated
+    withChildCreated
+  {
+    uint256 taskId = 0;
+    uint256 childId = 0;
+
+    vm.prank(PARENT);
+    kiddoPerks.removeChild(childId);
+
+    vm.prank(PARENT);
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KiddoPerks.KiddoPerks__NoValidChild.selector, CHILD_ONE
+      )
+    );
+    kiddoPerks.completeTask(taskId, CHILD_ONE);
   }
 
   /////////////////////
