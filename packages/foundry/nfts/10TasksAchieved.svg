@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#FFEE58" />
+
+  <!-- DApp Name -->
+  <text x="200" y="70" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#000000"
+    font-weight="bold">
+    KiddoPerks
+  </text>
+
+  <!-- Medal Ribbon -->
+  <polygon points="170,100 200,180 230,100" fill="#03A9F4" />
+
+  <!-- Medal Circle -->
+  <circle cx="200" cy="200" r="80" fill="#EC407A" stroke="#D81B60" stroke-width="6" />
+
+  <!-- Medal Inner Circle -->
+  <circle cx="200" cy="200" r="60" fill="#03A9F4" />
+
+  <!-- Number 10 -->
+  <text x="200" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="50" fill="#FFFFFF"
+    font-weight="bold">
+    10
+  </text>
+
+  <!-- Completion Text -->
+  <text x="200" y="310" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#000000"
+    font-weight="bold">
+    Keep up the great work! 🎉
+  </text>
+
+  <!-- Footer Banner -->
+  <rect x="50" y="330" width="300" height="50" rx="10" fill="#03A9F4" />
+
+  <!-- Footer Banner Text -->
+  <text x="200" y="360" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#000000"
+    font-weight="bold">
+    You've completed 10 tasks!
+  </text>
+</svg>
