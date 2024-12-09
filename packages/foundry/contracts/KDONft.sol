@@ -37,7 +37,8 @@ contract KDONft is ERC721 {
   // STATE VARIABLES
   //////////////
   uint256 public s_nextTokenId;
-  mapping(address child => TaskMilestone taskMilestone) public s_childLastNftMinted;
+  mapping(address child => TaskMilestone taskMilestone) public
+    s_childLastNftMinted;
 
   constructor() ERC721("KiddoPerks NFT", "KDONft") {
     s_nextTokenId = 0;
@@ -48,7 +49,10 @@ contract KDONft is ERC721 {
    * @param to Address of the user to mint the NFT for.
    * @param numTasksCompleted Number of tasks the user has completed.
    */
-  function mintNft(address to, uint256 numTasksCompleted) public hasCompletedMinTasks(numTasksCompleted) {
+  function mintNft(
+    address to,
+    uint256 numTasksCompleted
+  ) public hasCompletedMinTasks(numTasksCompleted) {
     TaskMilestone currentTaskMilestone = _getMilestone(numTasksCompleted);
     if (s_childLastNftMinted[to] == currentTaskMilestone) {
       revert KDONft__CannotMintNFTMoreThanOnce(to);
@@ -81,8 +85,8 @@ contract KDONft is ERC721 {
    */
   function _getMilestone(
     uint256 numTasksCompleted
-  ) internal pure hasCompletedMinTasks(numTasksCompleted) returns (TaskMilestone) {
-    if (numTasksCompleted >= FIVE) {
+  ) public pure hasCompletedMinTasks(numTasksCompleted) returns (TaskMilestone) {
+    if (numTasksCompleted >= HUNDRED) {
       return TaskMilestone.HUNDRED;
     } else if (numTasksCompleted >= FIFTY) {
       return TaskMilestone.FIFTY;

@@ -10,4 +10,28 @@ contract KDONftTest is Test {
   function setUp() public {
     kdoNft = new KDONft();
   }
+
+  function testFuzz_GetMilestone(
+    uint256 _numTasksCompleted
+  ) public {
+    uint256 numTasksCompleted = bound(_numTasksCompleted, 0, 200);
+
+    KDONft.TaskMilestone expectedMilestone;
+    if (numTasksCompleted >= 100) {
+      expectedMilestone = KDONft.TaskMilestone.HUNDRED;
+    } else if (numTasksCompleted >= 50) {
+      expectedMilestone = KDONft.TaskMilestone.FIFTY;
+    } else if (numTasksCompleted >= 20) {
+      expectedMilestone = KDONft.TaskMilestone.TWENTY;
+    } else if (numTasksCompleted >= 10) {
+      expectedMilestone = KDONft.TaskMilestone.TEN;
+    } else if (numTasksCompleted >= 5) {
+      expectedMilestone = KDONft.TaskMilestone.FIVE;
+    } else {
+      vm.expectRevert(KDONft.KDONft__MinimumTasksCompletedRequired.selector);
+      kdoNft._getMilestone(numTasksCompleted);
+      return;
+    }
+    assert(kdoNft._getMilestone(numTasksCompleted) == expectedMilestone);
+  }
 }
