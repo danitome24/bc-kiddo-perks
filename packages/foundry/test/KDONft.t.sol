@@ -2,5 +2,12 @@
 pragma solidity ^0.8.13;
 
 import { Test, console } from "forge-std/Test.sol";
+import { KDONft } from "../contracts/KDONft.sol";
 
-contract KDONft is Test { }
+contract KDONftTest is Test {
+  KDONft kdoNft;
+
+  function setUp() public {
+    kdoNft = new KDONft();
+  }
+}
