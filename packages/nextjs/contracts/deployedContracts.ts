@@ -1296,6 +1296,17 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "KiddoPerks__NoValidChild",
+          inputs: [
+            {
+              name: "childAddr",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "KiddoPerks__NotEnoughTokenBalance",
           inputs: [
             {
@@ -1328,7 +1339,7 @@ const deployedContracts = {
         },
         {
           type: "error",
-          name: "KiddoPerks__PerkAlreadyRedemmed",
+          name: "KiddoPerks__PerkAlreadyRedeemmed",
           inputs: [
             {
               name: "id",

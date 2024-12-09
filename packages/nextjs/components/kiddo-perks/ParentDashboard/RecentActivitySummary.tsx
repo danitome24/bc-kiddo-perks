@@ -55,24 +55,32 @@ export const RecentActivitySummary = () => {
   return (
     <section className="mt-6">
       <h2 className="text-lg font-semibold mb-4">Recent Activity Summary</h2>
-      <ul className="bg-secondary shadow-md rounded-lg divide-y divide-gray-200">
-        {activities.map(activity => (
-          <li key={activity.id} className="flex items-start p-4">
-            <Image
-              className="w-16 h-16 rounded-full"
-              width={90}
-              height={90}
-              src={"/childAvatar.png"}
-              alt="Child image"
-            />
+      {activities.length == 0 && (
+        <div className="bg-secondary shadow-md rounded-lg divide-y divide-gray-200">
+          <p className="p-4 text-center">No activity yet</p>
+        </div>
+      )}
 
-            <div className="ml-4">
-              <p className="text-sm ">{activity.title}</p>
-              <p>{activity.blockNumber}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {activities.length > 0 && (
+        <ul className="bg-secondary shadow-md rounded-lg divide-y divide-gray-200">
+          {activities.map(activity => (
+            <li key={activity.id} className="flex items-start p-4">
+              <Image
+                className="w-16 h-16 rounded-full"
+                width={90}
+                height={90}
+                src={"/childAvatar.png"}
+                alt="Child image"
+              />
+
+              <div className="ml-4">
+                <p className="text-sm ">{activity.title}</p>
+                <p>{activity.blockNumber}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 };
