@@ -127,7 +127,7 @@ contract KiddoPerks is Ownable {
     token.mint(by, taskCompleted.tokensReward);
     emit TokenMinted(by, taskCompleted.tokensReward);
 
-    s_childNumTasksCompleted[by] += 1;
+    s_childNumTasksCompleted[by]++;
   }
 
   function removeTask(
@@ -284,7 +284,7 @@ contract KiddoPerks is Ownable {
         msg.sender, numTaskCompletedByChild
       );
     }
-    nft.mintNft(msg.sender, s_childNumTasksCompleted[msg.sender]);
+    nft.mintNft(msg.sender, numTaskCompletedByChild);
   }
 
   /**

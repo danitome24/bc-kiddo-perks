@@ -17,6 +17,7 @@ contract KDONft is ERC721 {
   error KDONft__CannotMintNFTMoreThanOnce(address who);
 
   enum TaskMilestone {
+    NONE, // Needed to first comparison. If not, first comparison will revert.
     FIVE,
     TEN,
     TWENTY,

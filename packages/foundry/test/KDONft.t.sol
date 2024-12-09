@@ -7,6 +7,9 @@ import { KDONft } from "../contracts/KDONft.sol";
 contract KDONftTest is Test {
   KDONft kdoNft;
 
+  address immutable CHILD_ONE = makeAddr("baby1");
+  address immutable CHILD_TWO = makeAddr("baby2");
+
   function setUp() public {
     kdoNft = new KDONft();
   }
@@ -33,5 +36,55 @@ contract KDONftTest is Test {
       return;
     }
     assert(kdoNft._getMilestone(numTasksCompleted) == expectedMilestone);
+  }
+
+  function testMintNftSuccess() public {
+    uint256 tasksCompleted = 10;
+
+    kdoNft.mintNft(CHILD_ONE, tasksCompleted);
+
+    assertEq(kdoNft.ownerOf(0), CHILD_ONE);
+    assertEq(kdoNft.s_nextTokenId(), 1);
+
+    assertEq(
+      uint256(kdoNft.s_childLastNftMinted(CHILD_ONE)),
+      uint256(KDONft.TaskMilestone.TEN)
+    );
+  }
+
+  function testMintRevertIfTasksBelowMinimum() public {
+    uint256 tasksCompleted = 4;
+
+    vm.expectRevert(KDONft.KDONft__MinimumTasksCompletedRequired.selector);
+    kdoNft.mintNft(CHILD_ONE, tasksCompleted);
+  }
+
+  function testMintNftRevertIfSameMilestone() public {
+    uint256 tasksCompleted = 10;
+
+    kdoNft.mintNft(CHILD_ONE, tasksCompleted);
+
+    vm.expectRevert(
+      abi.encodeWithSelector(
+        KDONft.KDONft__CannotMintNFTMoreThanOnce.selector, CHILD_ONE
+      )
+    );
+    kdoNft.mintNft(CHILD_ONE, tasksCompleted);
+  }
+
+  function testMintNftMultipleMilestones() public {
+    kdoNft.mintNft(CHILD_ONE, 10);
+    assertEq(kdoNft.ownerOf(0), CHILD_ONE);
+    assertEq(
+      uint256(kdoNft.s_childLastNftMinted(CHILD_ONE)),
+      uint256(KDONft.TaskMilestone.TEN)
+    );
+
+    kdoNft.mintNft(CHILD_ONE, 20);
+    assertEq(kdoNft.ownerOf(1), CHILD_ONE);
+    assertEq(
+      uint256(kdoNft.s_childLastNftMinted(CHILD_ONE)),
+      uint256(KDONft.TaskMilestone.TWENTY)
+    );
   }
 }
