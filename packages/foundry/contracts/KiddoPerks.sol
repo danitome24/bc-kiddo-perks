@@ -28,7 +28,7 @@ contract KiddoPerks is Ownable {
   );
   error KiddoPerks__PerkAlreadyRedeemmed(uint256 id, address by);
   error KiddoPerks__NoValidChild(address childAddr);
-  error KiddoPerks__CannotMintAnyNFTYet(address who);
+  error KiddoPerks__CannotMintAnyNFTYet(address who, uint256 numTasksCompleted);
 
   uint256 constant MIN_TASK_COMPLETED_NFT = 5;
 
@@ -126,6 +126,8 @@ contract KiddoPerks is Ownable {
 
     token.mint(by, taskCompleted.tokensReward);
     emit TokenMinted(by, taskCompleted.tokensReward);
+
+    s_childNumTasksCompleted[by] += 1;
   }
 
   function removeTask(
@@ -278,7 +280,9 @@ contract KiddoPerks is Ownable {
   function mintNFTByTaskCompletion() public {
     uint256 numTaskCompletedByChild = s_childNumTasksCompleted[msg.sender];
     if (numTaskCompletedByChild < MIN_TASK_COMPLETED_NFT) {
-      revert KiddoPerks__CannotMintAnyNFTYet(msg.sender);
+      revert KiddoPerks__CannotMintAnyNFTYet(
+        msg.sender, numTaskCompletedByChild
+      );
     }
     nft.mintNft(msg.sender, s_childNumTasksCompleted[msg.sender]);
   }

@@ -543,9 +543,28 @@ contract KiddoPerksTest is Test {
     vm.prank(CHILD_ONE);
     vm.expectRevert(
       abi.encodeWithSelector(
-        KiddoPerks.KiddoPerks__CannotMintAnyNFTYet.selector, CHILD_ONE
+        KiddoPerks.KiddoPerks__CannotMintAnyNFTYet.selector, CHILD_ONE, 4
       )
     );
+    kiddoPerks.mintNFTByTaskCompletion();
+  }
+
+  function testCanMintNFT() public withChildCreated withTaskCreated {
+    vm.startPrank(PARENT);
+    kiddoPerks.createTask("Clean up room", SMALL_REQUIRED_TOKENS_AMOUNT);
+    kiddoPerks.createTask("Make bed", SMALL_REQUIRED_TOKENS_AMOUNT);
+    kiddoPerks.createTask("Brush teeth", SMALL_REQUIRED_TOKENS_AMOUNT);
+    kiddoPerks.createTask("Do homework", SMALL_REQUIRED_TOKENS_AMOUNT);
+    kiddoPerks.createTask("Throw out trash", SMALL_REQUIRED_TOKENS_AMOUNT);
+
+    kiddoPerks.completeTask(0, CHILD_ONE);
+    kiddoPerks.completeTask(1, CHILD_ONE);
+    kiddoPerks.completeTask(2, CHILD_ONE);
+    kiddoPerks.completeTask(3, CHILD_ONE);
+    kiddoPerks.completeTask(4, CHILD_ONE);
+    vm.stopPrank();
+
+    vm.prank(CHILD_ONE);
     kiddoPerks.mintNFTByTaskCompletion();
   }
 
