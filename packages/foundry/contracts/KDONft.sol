@@ -8,18 +8,26 @@ contract KDONft is ERC721 {
 
   error KDONft__NftDoesNotExist(uint256 tokenId);
 
+  enum TasksThreshold {
+    FIVE,
+    TEN,
+    TWENTY,
+    FIFTY,
+    HUNDRED
+  }
+
   uint256 public s_nextTokenId;
+  mapping(address child => TasksThreshold tasksCompleted) public
+    s_childLastNftMinted;
 
   constructor() ERC721("KiddoPerks NFT", "KDONft") {
     s_nextTokenId = 0;
   }
 
-  function mintNft(
-    address to
-  ) public {
+  function mintNft(address to) public {
     _safeMint(to, s_nextTokenId);
     emit KDONftMinted(to, s_nextTokenId);
-    s_nextTokenId++;
+    s_childToTokenId[s_nextTokenId] = s_nextTokenId++;
   }
 
   function tokenURI(

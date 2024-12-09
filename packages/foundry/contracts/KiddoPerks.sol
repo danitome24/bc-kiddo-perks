@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 import { KDOToken } from "./KDOToken.sol";
+import { KDONft } from "./KDONft.sol";
 
 contract KiddoPerks is Ownable {
   event TaskCreated(string title);
@@ -27,8 +28,12 @@ contract KiddoPerks is Ownable {
   );
   error KiddoPerks__PerkAlreadyRedeemmed(uint256 id, address by);
   error KiddoPerks__NoValidChild(address childAddr);
+  error KiddoPerks__CannotMintAnyNFTYet(address who);
+
+  uint256 constant MIN_TASK_COMPLETED_NFT = 5;
 
   KDOToken token;
+  KDONft nft;
   address public parent;
 
   mapping(uint256 => Child) public s_children;
@@ -43,6 +48,8 @@ contract KiddoPerks is Ownable {
   mapping(uint256 => Task) public s_tasks;
   uint256 public s_taskNextId = 0;
   mapping(address => mapping(uint256 => bool)) public s_completedTasksByUser;
+  mapping(address child => uint256 numTasksCompleted) public
+    s_childNumTasksCompleted;
 
   struct Task {
     uint256 id;
@@ -65,11 +72,10 @@ contract KiddoPerks is Ownable {
     bool removed;
   }
 
-  constructor(
-    KDOToken _token
-  ) Ownable(msg.sender) {
+  constructor(KDOToken _token, KDONft _nft) Ownable(msg.sender) {
     setParent(msg.sender);
     token = _token;
+    nft = _nft;
   }
 
   /**
@@ -77,9 +83,7 @@ contract KiddoPerks is Ownable {
    *
    * @param newParentAddress New parent address
    */
-  function setParent(
-    address newParentAddress
-  ) public onlyOwner {
+  function setParent(address newParentAddress) public onlyOwner {
     parent = newParentAddress;
     transferOwnership(newParentAddress);
 
@@ -98,9 +102,7 @@ contract KiddoPerks is Ownable {
     emit TaskCreated(title);
   }
 
-  function taskBy(
-    uint256 id
-  ) public view returns (Task memory) {
+  function taskBy(uint256 id) public view returns (Task memory) {
     return s_tasks[id];
   }
 
@@ -122,9 +124,7 @@ contract KiddoPerks is Ownable {
     emit TokenMinted(by, taskCompleted.tokensReward);
   }
 
-  function removeTask(
-    uint256 id
-  ) public onlyOwner {
+  function removeTask(uint256 id) public onlyOwner {
     if (id >= s_taskNextId) {
       revert KiddoPerks__NotValidId(id);
     }
@@ -168,15 +168,11 @@ contract KiddoPerks is Ownable {
     emit PerkCreated(title, tokensRequired);
   }
 
-  function perkBy(
-    uint256 id
-  ) public view returns (Perk memory) {
+  function perkBy(uint256 id) public view returns (Perk memory) {
     return s_perks[id];
   }
 
-  function removePerk(
-    uint256 id
-  ) public onlyOwner {
+  function removePerk(uint256 id) public onlyOwner {
     if (id >= s_perksNextId) {
       revert KiddoPerks__NotValidId(id);
     }
@@ -199,9 +195,7 @@ contract KiddoPerks is Ownable {
     return allPerks;
   }
 
-  function redeemPerk(
-    uint256 perkId
-  ) public onlyValidChild(msg.sender) {
+  function redeemPerk(uint256 perkId) public onlyValidChild(msg.sender) {
     Perk memory perk = s_perks[perkId];
     uint256 userTokenBalance = token.balanceOf(msg.sender);
     if (userTokenBalance < perk.tokensRequired) {
@@ -234,15 +228,11 @@ contract KiddoPerks is Ownable {
     emit ChildAdded(name, childAddr);
   }
 
-  function childBy(
-    uint256 id
-  ) public view returns (Child memory) {
+  function childBy(uint256 id) public view returns (Child memory) {
     return s_children[id];
   }
 
-  function removeChild(
-    uint256 id
-  ) public onlyOwner {
+  function removeChild(uint256 id) public onlyOwner {
     if (id >= s_childrenNextId) {
       revert KiddoPerks__NotValidId(id);
     }
@@ -266,9 +256,24 @@ contract KiddoPerks is Ownable {
     return allChildren;
   }
 
-  modifier onlyValidChild(
-    address childAddress
-  ) {
+  /**
+   * NFT Mint
+   */
+  function mintNFTByTaskCompletion() public {
+    uint256 numTaskCompletedByChild = s_childNumTasksCompleted[msg.sender];
+    if (numTaskCompletedByChild >= MIN_TASK_COMPLETED_NFT) {
+      revert KiddoPerks__CannotMintAnyNFTYet(msg.sender);
+    }
+
+    if (numTaskCompletedByChild >= 5 && numTaskCompletedByChild < 10) {
+      nft.mintNft(msg.sender, s_childNumTasksCompleted[msg.sender]);
+    }
+  }
+
+  /**
+   * Modifiers
+   */
+  modifier onlyValidChild(address childAddress) {
     if (s_validChildAddresses[childAddress] == false) {
       revert KiddoPerks__NoValidChild(childAddress);
     }
