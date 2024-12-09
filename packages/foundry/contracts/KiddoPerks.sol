@@ -23,7 +23,9 @@ contract KiddoPerks is Ownable {
   error KiddoPerks__CannotCompleteRemovedTask(uint256 id);
   error KiddoPerks__ChildAlreadyRemoved(uint256 id);
   error KiddoPerks__PerkAlreadyRemoved(uint256 id);
-  error KiddoPerks__NotEnoughTokenBalance(uint256 id, address by, uint256 tokensRequired);
+  error KiddoPerks__NotEnoughTokenBalance(
+    uint256 id, address by, uint256 tokensRequired
+  );
   error KiddoPerks__PerkAlreadyRedeemmed(uint256 id, address by);
   error KiddoPerks__NoValidChild(address childAddr);
   error KiddoPerks__CannotMintAnyNFTYet(address who);
@@ -39,13 +41,15 @@ contract KiddoPerks is Ownable {
   uint256 public s_childrenNextId = 0;
 
   mapping(uint256 => Perk) public s_perks;
-  mapping(uint256 perkId => mapping(address by => bool isRedeemed)) public s_perksRedeemedBy;
+  mapping(uint256 perkId => mapping(address by => bool isRedeemed)) public
+    s_perksRedeemedBy;
   uint256 public s_perksNextId = 0;
 
   mapping(uint256 => Task) public s_tasks;
   uint256 public s_taskNextId = 0;
   mapping(address => mapping(uint256 => bool)) public s_completedTasksByUser;
-  mapping(address child => uint256 numTasksCompleted) public s_childNumTasksCompleted;
+  mapping(address child => uint256 numTasksCompleted) public
+    s_childNumTasksCompleted;
 
   struct Task {
     uint256 id;
@@ -91,7 +95,10 @@ contract KiddoPerks is Ownable {
   /**
    * Tasks
    */
-  function createTask(string memory title, uint256 tokensReward) public onlyOwner {
+  function createTask(
+    string memory title,
+    uint256 tokensReward
+  ) public onlyOwner {
     s_tasks[s_taskNextId] = Task(s_taskNextId, title, tokensReward, false);
     s_taskNextId++;
     emit TaskCreated(title);
@@ -103,7 +110,10 @@ contract KiddoPerks is Ownable {
     return s_tasks[id];
   }
 
-  function completeTask(uint256 taskId, address by) public onlyOwner onlyValidChild(by) {
+  function completeTask(
+    uint256 taskId,
+    address by
+  ) public onlyOwner onlyValidChild(by) {
     if (taskId >= s_taskNextId) {
       revert KiddoPerks__TaskNotFound(taskId);
     }
@@ -134,7 +144,10 @@ contract KiddoPerks is Ownable {
     emit TaskRemoved(id);
   }
 
-  function isTaskCompletedBy(uint256 taskId, address by) public view returns (bool) {
+  function isTaskCompletedBy(
+    uint256 taskId,
+    address by
+  ) public view returns (bool) {
     return s_completedTasksByUser[by][taskId];
   }
 
@@ -151,7 +164,10 @@ contract KiddoPerks is Ownable {
   /**
    * Perks
    */
-  function createPerk(string memory title, uint256 tokensRequired) public onlyOwner {
+  function createPerk(
+    string memory title,
+    uint256 tokensRequired
+  ) public onlyOwner {
     Perk memory newPerk = Perk(s_perksNextId, title, tokensRequired, false);
     s_perks[s_perksNextId] = newPerk;
     s_perksNextId++;
@@ -195,13 +211,16 @@ contract KiddoPerks is Ownable {
     Perk memory perk = s_perks[perkId];
     uint256 userTokenBalance = token.balanceOf(msg.sender);
     if (userTokenBalance < perk.tokensRequired) {
-      revert KiddoPerks__NotEnoughTokenBalance(perkId, msg.sender, perk.tokensRequired);
+      revert KiddoPerks__NotEnoughTokenBalance(
+        perkId, msg.sender, perk.tokensRequired
+      );
     }
     if (s_perksRedeemedBy[perkId][msg.sender]) {
       revert KiddoPerks__PerkAlreadyRedeemmed(perkId, msg.sender);
     }
 
-    bool sent = token.transferFrom(msg.sender, address(this), perk.tokensRequired);
+    bool sent =
+      token.transferFrom(msg.sender, address(this), perk.tokensRequired);
     if (!sent) {
       revert("Error on token transfer");
     }
@@ -258,7 +277,7 @@ contract KiddoPerks is Ownable {
    */
   function mintNFTByTaskCompletion() public {
     uint256 numTaskCompletedByChild = s_childNumTasksCompleted[msg.sender];
-    if (numTaskCompletedByChild >= MIN_TASK_COMPLETED_NFT) {
+    if (numTaskCompletedByChild < MIN_TASK_COMPLETED_NFT) {
       revert KiddoPerks__CannotMintAnyNFTYet(msg.sender);
     }
     nft.mintNft(msg.sender, s_childNumTasksCompleted[msg.sender]);
