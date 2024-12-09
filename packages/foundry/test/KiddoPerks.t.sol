@@ -341,7 +341,7 @@ contract KiddoPerksTest is Test {
 
     vm.expectRevert(
       abi.encodeWithSelector(
-        KiddoPerks.KiddoPerks__PerkAlreadyRedemmed.selector, perkId, CHILD_ONE
+        KiddoPerks.KiddoPerks__PerkAlreadyRedeemmed.selector, perkId, CHILD_ONE
       )
     );
     vm.prank(CHILD_ONE);
