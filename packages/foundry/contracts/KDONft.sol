@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract KDONft is ERC721 {
   //////////////
@@ -40,9 +41,29 @@ contract KDONft is ERC721 {
   uint256 public s_nextTokenId;
   mapping(address child => TaskMilestone taskMilestone) public
     s_childLastNftMinted;
+  mapping(uint256 tokenId => TaskMilestone taskMilestone) public
+    s_tokenIdToMilestone;
 
-  constructor() ERC721("KiddoPerks NFT", "KDONft") {
+  string private s_fiveSvgImageUri;
+  string private s_tenSvgImageUri;
+  string private s_twentySvgImageUri;
+  string private s_fiftySvgImageUri;
+  string private s_hundredSvgImageUri;
+
+  constructor(
+    string memory fiveSvgImageUri,
+    string memory tenSvgImageUri,
+    string memory twentySvgImageUri,
+    string memory fiftySvgImageUri,
+    string memory hundredSvgImageUri
+  ) ERC721("KiddoPerks NFT", "KDONft") {
     s_nextTokenId = 0;
+
+    s_fiveSvgImageUri = fiveSvgImageUri;
+    s_tenSvgImageUri = tenSvgImageUri;
+    s_twentySvgImageUri = twentySvgImageUri;
+    s_fiftySvgImageUri = fiftySvgImageUri;
+    s_hundredSvgImageUri = hundredSvgImageUri;
   }
 
   /**
@@ -76,7 +97,55 @@ contract KDONft is ERC721 {
     if (tokenId >= s_nextTokenId) {
       revert KDONft__NftDoesNotExist(tokenId);
     }
-    return "";
+
+    string memory imageUri =
+      _getImageUriForMilestone(s_tokenIdToMilestone[tokenId]);
+
+    return string(
+      abi.encodePacked(
+        _baseURI(),
+        Base64.encode(
+          bytes(
+            abi.encodePacked(
+              '{"name": "}',
+              name(),
+              '", "description": "An NFT that reflects the number of tasks completed on KiddoPerks.", "image:":',
+              imageUri,
+              '"}'
+            )
+          )
+        )
+      )
+    );
+  }
+
+  /**
+   * @dev We need to let metadata know that the content is JSON.
+   */
+  function _baseURI() internal pure override returns (string memory) {
+    return "data:application/json;base64,";
+  }
+
+  /**
+   * @dev Gets image uri given a task milestone
+   * @param milestone Milestone task for tokenId
+   */
+  function _getImageUriForMilestone(
+    TaskMilestone milestone
+  ) internal view returns (string memory) {
+    if (milestone == TaskMilestone.FIVE) {
+      return s_fiveSvgImageUri;
+    } else if (milestone == TaskMilestone.TEN) {
+      return s_tenSvgImageUri;
+    } else if (milestone == TaskMilestone.TWENTY) {
+      return s_twentySvgImageUri;
+    } else if (milestone == TaskMilestone.FIFTY) {
+      return s_fiftySvgImageUri;
+    } else if (milestone == TaskMilestone.HUNDRED) {
+      return s_hundredSvgImageUri;
+    } else {
+      revert("Invalid milestone");
+    }
   }
 
   /**
