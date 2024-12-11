@@ -11,7 +11,24 @@ contract KDONftTest is Test {
   address immutable CHILD_TWO = makeAddr("baby2");
 
   function setUp() public {
-    kdoNft = new KDONft();
+    string memory fiveTasksAchievedSvg =
+      vm.readFile("./nfts/5TasksAchieved.svg");
+    string memory tenTasksAchievedSvg =
+      vm.readFile("./nfts/10TasksAchieved.svg");
+    string memory twentyTasksAchievedSvg =
+      vm.readFile("./nfts/20TasksAchieved.svg");
+    string memory fiftyTasksAchievedSvg =
+      vm.readFile("./nfts/50TasksAchieved.svg");
+    string memory hundredTasksAchievedSvg =
+      vm.readFile("./nfts/100TasksAchieved.svg");
+
+    kdoNft = new KDONft(
+      fiveTasksAchievedSvg,
+      tenTasksAchievedSvg,
+      twentyTasksAchievedSvg,
+      fiftyTasksAchievedSvg,
+      hundredTasksAchievedSvg
+    );
   }
 
   function testFuzz_GetMilestone(

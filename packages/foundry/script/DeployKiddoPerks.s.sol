@@ -11,15 +11,15 @@ contract DeployKiddoPerks is ScaffoldETHDeploy {
   // use `deployer` from `ScaffoldETHDeploy`
   function run() external ScaffoldEthDeployerRunner {
     string memory fiveTasksAchievedSvg =
-      vm.readFile("./nfts/5tasksAchieved.svg");
+      vm.readFile("./nfts/5TasksAchieved.svg");
     string memory tenTasksAchievedSvg =
-      vm.readFile("./nfts/10tasksAchieved.svg");
+      vm.readFile("./nfts/10TasksAchieved.svg");
     string memory twentyTasksAchievedSvg =
-      vm.readFile("./nfts/20tasksAchieved.svg");
+      vm.readFile("./nfts/20TasksAchieved.svg");
     string memory fiftyTasksAchievedSvg =
-      vm.readFile("./nfts/50tasksAchieved.svg");
+      vm.readFile("./nfts/50TasksAchieved.svg");
     string memory hundredTasksAchievedSvg =
-      vm.readFile("./nfts/100tasksAchieved.svg");
+      vm.readFile("./nfts/100TasksAchieved.svg");
 
     address PARENT = 0x27dBc64e6C38633eD526d970258372476BCE58C0;
 
