@@ -17,9 +17,9 @@ interface NftListProps {
 
 export const NftList: React.FC<NftListProps> = ({ availableNfts, onMint }) => {
   return (
-    <section className="mt-6">
+    <section className="mt-6 lg:max-w-2xl max-w-md">
       <h2 className="text-lg font-semibold mb-4 text-secondary">Available NFTs</h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4">
         {availableNfts.map(nft => (
           <div key={nft.id} className="flex items-center bg-base-200 rounded-lg shadow-md p-4">
             <Image
