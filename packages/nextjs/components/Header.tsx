@@ -38,11 +38,6 @@ export const menuLinks: HeaderMenuLink[] = [
     visibleTo: "parent",
   },
   {
-    label: "NFTs",
-    href: "/nfts",
-    visibleTo: "child",
-  },
-  {
     label: "Debug Contracts",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,

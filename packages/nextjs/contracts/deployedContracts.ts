@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     KDOToken: {
-      address: "0xe1da8919f262ee86f9be05059c9280142cf23f48",
+      address: "0x700b6a60ce7eaaea56f065753d8dcb9653dbad35",
       abi: [
         {
           type: "constructor",
@@ -450,11 +450,37 @@ const deployedContracts = {
       },
     },
     KDONft: {
-      address: "0x0c8e79f3534b00d9a3d4a856b665bf4ebc22f2ba",
+      address: "0xa15bb66138824a1c7167f5e85b957d04dd34e468",
       abi: [
         {
           type: "constructor",
-          inputs: [],
+          inputs: [
+            {
+              name: "fiveSvgImageUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "tenSvgImageUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "twentySvgImageUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "fiftySvgImageUri",
+              type: "string",
+              internalType: "string",
+            },
+            {
+              name: "hundredSvgImageUri",
+              type: "string",
+              internalType: "string",
+            },
+          ],
           stateMutability: "nonpayable",
         },
         {
@@ -634,6 +660,25 @@ const deployedContracts = {
               name: "",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "s_tokenIdToMilestone",
+          inputs: [
+            {
+              name: "tokenId",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "taskMilestone",
+              type: "uint8",
+              internalType: "enum KDONft.TaskMilestone",
             },
           ],
           stateMutability: "view",
@@ -1022,7 +1067,7 @@ const deployedContracts = {
       },
     },
     KiddoPerks: {
-      address: "0xed1db453c3156ff3155a97ad217b3087d5dc5f6e",
+      address: "0xb19b36b1456e65e3a6d514d3f715f204bd59f431",
       abi: [
         {
           type: "constructor",
