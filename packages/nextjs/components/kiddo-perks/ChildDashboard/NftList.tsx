@@ -6,14 +6,13 @@ interface NftItem {
   image: string;
   name: string;
   description: string;
-  cost: number; // Cost in KDO tokens
-  isMinted: boolean; // Indicates if the NFT is already minted by the user
-  canBeMinted: boolean; // Determines if the user has enough tokens to mint
+  isMinted: boolean;
+  canBeMinted: boolean;
 }
 
 interface NftListProps {
   availableNfts: NftItem[];
-  onMint: (nftId: string) => void; // Callback to handle NFT minting
+  onMint: (nftId: string) => void;
 }
 
 export const NftList: React.FC<NftListProps> = ({ availableNfts, onMint }) => {
@@ -33,9 +32,6 @@ export const NftList: React.FC<NftListProps> = ({ availableNfts, onMint }) => {
             <div className="flex-1">
               <h3 className="text-primary font-semibold text-md">{nft.name}</h3>
               <p className="text-neutral text-sm">{nft.description}</p>
-              <div className="mt-2">
-                <span className="badge badge-secondary">Cost: {nft.cost} KDO</span>
-              </div>
             </div>
             <div className="ml-4">
               {nft.isMinted ? (

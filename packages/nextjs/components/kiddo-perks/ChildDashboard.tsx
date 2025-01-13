@@ -1,4 +1,9 @@
 import { ContentHeader, PerksListGrid, TasksList, TasksProgress, TokensBalance } from ".";
+import FiveTaskAchievedNFT from "../../../foundry/nfts/5TasksAchieved.svg";
+import TenTaskAchievedNFT from "../../../foundry/nfts/10TasksAchieved.svg";
+import TwentyTaskAchievedNFT from "../../../foundry/nfts/20TasksAchieved.svg";
+import FiftyTaskAchievedNFT from "../../../foundry/nfts/50TasksAchieved.svg";
+import HundredTaskAchievedNFT from "../../../foundry/nfts/100TasksAchieved.svg";
 import { NftList } from "./ChildDashboard/NftList";
 import { useAccount } from "wagmi";
 import { useTaskManager, useTokenBalance } from "~~/hooks/kiddo-perks";
@@ -31,29 +36,42 @@ export const ChildDashboard = () => {
         availableNfts={[
           {
             id: "1",
-            image: "/images/nft1.png",
-            name: "Super Star NFT",
-            description: "A special NFT for completing 5 tasks.",
-            cost: 10,
+            image: FiveTaskAchievedNFT,
+            name: "Shiny Star Badge",
+            description: "You're a shining star! Earned by completing 5 tasks. Keep glowing!",
             isMinted: false,
             canBeMinted: true,
           },
           {
             id: "2",
-            image: "/images/nft2.png",
-            name: "Task Master",
-            description: "Awarded for completing all tasks this week.",
-            cost: 20,
+            image: TenTaskAchievedNFT,
+            name: "Task Hero Medal",
+            description: "Wow! You're a true hero for finishing 10 tasks. Keep saving the day!",
             isMinted: false,
             canBeMinted: false,
           },
           {
             id: "3",
-            image: "/images/nft3.png",
-            name: "Legendary Helper",
-            description: "Given to children who help every day for a month.",
-            cost: 50,
-            isMinted: true,
+            image: TwentyTaskAchievedNFT,
+            name: "Super Helper Trophy",
+            description: "For helping out 20 times! You're officially a super helper. Great job!",
+            isMinted: false,
+            canBeMinted: false,
+          },
+          {
+            id: "4",
+            image: FiftyTaskAchievedNFT,
+            name: "Legendary Champion Crown",
+            description: "You’re unstoppable! Earned by completing 50 tasks. All hail the champion!",
+            isMinted: false,
+            canBeMinted: false,
+          },
+          {
+            id: "5",
+            image: HundredTaskAchievedNFT,
+            name: "Ultimate Helper Cape",
+            description: "100 tasks completed?! You're now the ultimate helper! Time to fly high!",
+            isMinted: false,
             canBeMinted: false,
           },
         ]}
