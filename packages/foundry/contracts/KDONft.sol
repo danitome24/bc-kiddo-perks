@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { Base64 } from "@openzeppelin/contracts/utils/Base64.sol";
+import { KiddoPerks } from "./KiddoPerks.sol";
 
 contract KDONft is ERC721 {
   //////////////
@@ -16,6 +17,9 @@ contract KDONft is ERC721 {
   error KDONft__NftDoesNotExist(uint256 tokenId);
   error KDONft__MinimumTasksCompletedRequired();
   error KDONft__CannotMintNFTMoreThanOnce(address who);
+  error KDONft__NotEnoughTasksCompletedToMint(
+    address who, uint256 nftTasksCompleted
+  );
 
   enum TaskMilestone {
     NONE, // Needed to first comparison. If not, first comparison will revert.
@@ -38,6 +42,7 @@ contract KDONft is ERC721 {
   //////////////
   // STATE VARIABLES
   //////////////
+  KiddoPerks kiddoPerks;
   uint256 public s_nextTokenId;
   mapping(address child => TaskMilestone taskMilestone) public
     s_childLastNftMinted;
@@ -51,6 +56,7 @@ contract KDONft is ERC721 {
   string private s_hundredSvgImageUri;
 
   constructor(
+    address _kiddoPerks,
     string memory fiveSvgImageUri,
     string memory tenSvgImageUri,
     string memory twentySvgImageUri,
@@ -58,7 +64,7 @@ contract KDONft is ERC721 {
     string memory hundredSvgImageUri
   ) ERC721("KiddoPerks NFT", "KDONft") {
     s_nextTokenId = 0;
-
+    kiddoPerks = KiddoPerks(_kiddoPerks);
     s_fiveSvgImageUri = fiveSvgImageUri;
     s_tenSvgImageUri = tenSvgImageUri;
     s_twentySvgImageUri = twentySvgImageUri;
@@ -74,7 +80,12 @@ contract KDONft is ERC721 {
   function mintNft(
     address to,
     uint256 numTasksCompleted
-  ) public hasCompletedMinTasks(numTasksCompleted) {
+  ) external hasCompletedMinTasks(numTasksCompleted) {
+    if (numTasksCompleted > kiddoPerks.s_childNumTasksCompleted(msg.sender)) {
+      revert KDONft__NotEnoughTasksCompletedToMint(
+        msg.sender, numTasksCompleted
+      );
+    }
     TaskMilestone currentTaskMilestone = _getMilestone(numTasksCompleted);
     if (s_childLastNftMinted[to] == currentTaskMilestone) {
       revert KDONft__CannotMintNFTMoreThanOnce(to);

@@ -24,7 +24,11 @@ contract DeployKiddoPerks is ScaffoldETHDeploy {
     address PARENT = 0x27dBc64e6C38633eD526d970258372476BCE58C0;
 
     KDOToken token = new KDOToken();
+
+    KiddoPerks kiddoPerks = new KiddoPerks(token);
+
     KDONft nft = new KDONft(
+      address(kiddoPerks),
       fiveTasksAchievedSvg,
       tenTasksAchievedSvg,
       twentyTasksAchievedSvg,
@@ -32,11 +36,13 @@ contract DeployKiddoPerks is ScaffoldETHDeploy {
       hundredTasksAchievedSvg
     );
 
-    KiddoPerks kiddoPerks = new KiddoPerks(token, nft);
     console.logString(
       string.concat(
         "KiddoPerks deployed at: ", vm.toString(address(kiddoPerks))
       )
+    );
+    console.logString(
+      string.concat("KDONft deployed at: ", vm.toString(address(nft)))
     );
     kiddoPerks.setParent(PARENT);
     token.transferOwnership(address(kiddoPerks));

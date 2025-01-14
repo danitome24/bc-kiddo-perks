@@ -33,7 +33,6 @@ contract KiddoPerks is Ownable {
   uint256 constant MIN_TASK_COMPLETED_NFT = 5;
 
   KDOToken token;
-  KDONft nft;
   address public parent;
 
   mapping(uint256 => Child) public s_children;
@@ -72,10 +71,11 @@ contract KiddoPerks is Ownable {
     bool removed;
   }
 
-  constructor(KDOToken _token, KDONft _nft) Ownable(msg.sender) {
+  constructor(
+    KDOToken _token
+  ) Ownable(msg.sender) {
     setParent(msg.sender);
     token = _token;
-    nft = _nft;
   }
 
   /**
@@ -272,19 +272,6 @@ contract KiddoPerks is Ownable {
     }
 
     return allChildren;
-  }
-
-  /**
-   * NFT Mint
-   */
-  function mintNFTByTaskCompletion() public {
-    uint256 numTaskCompletedByChild = s_childNumTasksCompleted[msg.sender];
-    if (numTaskCompletedByChild < MIN_TASK_COMPLETED_NFT) {
-      revert KiddoPerks__CannotMintAnyNFTYet(
-        msg.sender, numTaskCompletedByChild
-      );
-    }
-    nft.mintNft(msg.sender, numTaskCompletedByChild);
   }
 
   /**

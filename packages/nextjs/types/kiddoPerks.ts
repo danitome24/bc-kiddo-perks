@@ -31,8 +31,9 @@ export type Activity = {
 
 export type CompletedTaskEvent = {
   by: string;
-  completedTasksNumber: number;
+  uniqueCompletedTasksNumber: number;
   pendingTasksNumber: number;
+  totalCompletedTasks: number;
 };
 
 export interface NftItem {

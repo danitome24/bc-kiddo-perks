@@ -4,13 +4,11 @@ pragma solidity ^0.8.13;
 import { Test, console } from "forge-std/Test.sol";
 import { KiddoPerks } from "../contracts/KiddoPerks.sol";
 import { KDOToken } from "../contracts/KDOToken.sol";
-import { KDONft } from "../contracts/KDONft.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract KiddoPerksTest is Test {
   KiddoPerks public kiddoPerks;
   KDOToken public kdoToken;
-  KDONft public kdoNft;
 
   uint256 constant SMALL_REQUIRED_TOKENS_AMOUNT = 2 * 1e18;
 
@@ -19,27 +17,7 @@ contract KiddoPerksTest is Test {
   address CHILD_TWO = makeAddr("Owen");
 
   function setUp() public {
-    kdoToken = new KDOToken();
-    string memory fiveTasksAchievedSvg =
-      vm.readFile("./nfts/5TasksAchieved.svg");
-    string memory tenTasksAchievedSvg =
-      vm.readFile("./nfts/10TasksAchieved.svg");
-    string memory twentyTasksAchievedSvg =
-      vm.readFile("./nfts/20TasksAchieved.svg");
-    string memory fiftyTasksAchievedSvg =
-      vm.readFile("./nfts/50TasksAchieved.svg");
-    string memory hundredTasksAchievedSvg =
-      vm.readFile("./nfts/100TasksAchieved.svg");
-
-    kdoNft = new KDONft(
-      fiveTasksAchievedSvg,
-      tenTasksAchievedSvg,
-      twentyTasksAchievedSvg,
-      fiftyTasksAchievedSvg,
-      hundredTasksAchievedSvg
-    );
-
-    kiddoPerks = new KiddoPerks(kdoToken, kdoNft);
+    kiddoPerks = new KiddoPerks(kdoToken);
     kiddoPerks.setParent(PARENT);
     kdoToken.transferOwnership(address(kiddoPerks));
   }
@@ -534,55 +512,6 @@ contract KiddoPerksTest is Test {
       )
     );
     kiddoPerks.removeChild(childId);
-  }
-
-  /**
-   * NFTs
-   */
-  function testRevertsIfTriesToMintNFTWithNoMinTasksCompletion()
-    public
-    withChildCreated
-    withTaskCreated
-  {
-    vm.startPrank(PARENT);
-    kiddoPerks.createTask("Clean up room", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Make bed", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Brush teeth", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Do homework", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Throw out trash", SMALL_REQUIRED_TOKENS_AMOUNT);
-
-    kiddoPerks.completeTask(0, CHILD_ONE);
-    kiddoPerks.completeTask(1, CHILD_ONE);
-    kiddoPerks.completeTask(2, CHILD_ONE);
-    kiddoPerks.completeTask(3, CHILD_ONE);
-    vm.stopPrank();
-
-    vm.prank(CHILD_ONE);
-    vm.expectRevert(
-      abi.encodeWithSelector(
-        KiddoPerks.KiddoPerks__CannotMintAnyNFTYet.selector, CHILD_ONE, 4
-      )
-    );
-    kiddoPerks.mintNFTByTaskCompletion();
-  }
-
-  function testCanMintNFT() public withChildCreated withTaskCreated {
-    vm.startPrank(PARENT);
-    kiddoPerks.createTask("Clean up room", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Make bed", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Brush teeth", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Do homework", SMALL_REQUIRED_TOKENS_AMOUNT);
-    kiddoPerks.createTask("Throw out trash", SMALL_REQUIRED_TOKENS_AMOUNT);
-
-    kiddoPerks.completeTask(0, CHILD_ONE);
-    kiddoPerks.completeTask(1, CHILD_ONE);
-    kiddoPerks.completeTask(2, CHILD_ONE);
-    kiddoPerks.completeTask(3, CHILD_ONE);
-    kiddoPerks.completeTask(4, CHILD_ONE);
-    vm.stopPrank();
-
-    vm.prank(CHILD_ONE);
-    kiddoPerks.mintNFTByTaskCompletion();
   }
 
   /**

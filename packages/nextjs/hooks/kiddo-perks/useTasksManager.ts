@@ -60,14 +60,17 @@ export const useTaskManager = () => {
       filters: { by: by },
     }); // TODO: solve lint error, cannot use custom hook here!
 
-    const completedTaskIds = new Set<number>(events?.map((event: any) => Number(event.args.taskId)) || []);
-    const completedTasks = tasks.filter(task => completedTaskIds.has(task.id));
-    const pendingTasks = tasks.filter(task => !completedTaskIds.has(task.id));
+    const uniqueCompletedTaskIds = new Set<number>(events?.map((event: any) => Number(event.args.taskId)) || []);
+    const uniqueCompletedTasks = tasks.filter(task => uniqueCompletedTaskIds.has(task.id));
+    const pendingTasks = tasks.filter(task => !uniqueCompletedTaskIds.has(task.id));
+
+    const totalCompletedTasks = events?.length || 0;
 
     const completedTasksEvent: CompletedTaskEvent = {
       by,
-      completedTasksNumber: completedTasks.length,
+      uniqueCompletedTasksNumber: uniqueCompletedTasks.length,
       pendingTasksNumber: pendingTasks.length,
+      totalCompletedTasks,
     };
 
     return completedTasksEvent;

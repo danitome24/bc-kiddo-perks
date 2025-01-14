@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import { Test, console } from "forge-std/Test.sol";
 import { KDONft } from "../contracts/KDONft.sol";
+import { KiddoPerks } from "../contracts/KiddoPerks.sol";
+import { KDOToken } from "../contracts/KDOToken.sol";
 
 contract KDONftTest is Test {
   KDONft kdoNft;
@@ -22,7 +24,10 @@ contract KDONftTest is Test {
     string memory hundredTasksAchievedSvg =
       vm.readFile("./nfts/100TasksAchieved.svg");
 
+    KiddoPerks kdoPerks = new KiddoPerks(new KDOToken());
+
     kdoNft = new KDONft(
+      address(kdoPerks),
       fiveTasksAchievedSvg,
       tenTasksAchievedSvg,
       twentyTasksAchievedSvg,

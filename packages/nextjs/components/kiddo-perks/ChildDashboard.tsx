@@ -12,7 +12,7 @@ export const ChildDashboard = () => {
   const account = useAccount();
   const { fetchTasksBy } = useTaskManager();
   const { rawTokenBalance, formattedTokenBalance } = useTokenBalance(account.address || "");
-  const { completedTasksNumber, pendingTasksNumber } = fetchTasksBy(account.address || "");
+  const { uniqueCompletedTasksNumber, totalCompletedTasks, pendingTasksNumber } = fetchTasksBy(account.address || "");
 
   return (
     <div className="p-6 min-h-screen">
@@ -27,7 +27,7 @@ export const ChildDashboard = () => {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <TasksProgress completed={completedTasksNumber} pending={pendingTasksNumber} />
+        <TasksProgress completed={uniqueCompletedTasksNumber} pending={pendingTasksNumber} />
         <TokensBalance balanceOf={account?.address || ""} />
       </div>
       <TasksList />
@@ -40,7 +40,7 @@ export const ChildDashboard = () => {
             name: "Shiny Star Badge",
             description: "You're a shining star! Earned by completing 5 tasks. Keep glowing!",
             isMinted: false,
-            canBeMinted: completedTasksNumber >= 5,
+            canBeMinted: totalCompletedTasks >= 5,
           },
           {
             id: "2",
@@ -48,7 +48,7 @@ export const ChildDashboard = () => {
             name: "Task Hero Medal",
             description: "Wow! You're a true hero for finishing 10 tasks. Keep saving the day!",
             isMinted: false,
-            canBeMinted: completedTasksNumber >= 10,
+            canBeMinted: totalCompletedTasks >= 10,
           },
           {
             id: "3",
@@ -56,7 +56,7 @@ export const ChildDashboard = () => {
             name: "Super Helper Trophy",
             description: "For helping out 20 times! You're officially a super helper. Great job!",
             isMinted: false,
-            canBeMinted: completedTasksNumber >= 20,
+            canBeMinted: totalCompletedTasks >= 20,
           },
           {
             id: "4",
@@ -64,7 +64,7 @@ export const ChildDashboard = () => {
             name: "Legendary Champion Crown",
             description: "You’re unstoppable! Earned by completing 50 tasks. All hail the champion!",
             isMinted: false,
-            canBeMinted: completedTasksNumber >= 50,
+            canBeMinted: totalCompletedTasks >= 50,
           },
           {
             id: "5",
@@ -72,7 +72,7 @@ export const ChildDashboard = () => {
             name: "Ultimate Helper Cape",
             description: "100 tasks completed?! You're now the ultimate helper! Time to fly high!",
             isMinted: false,
-            canBeMinted: completedTasksNumber >= 100,
+            canBeMinted: totalCompletedTasks >= 100,
           },
         ]}
         onMint={nftId => {
