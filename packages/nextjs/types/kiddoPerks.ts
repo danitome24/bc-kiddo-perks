@@ -34,3 +34,12 @@ export type CompletedTaskEvent = {
   completedTasksNumber: number;
   pendingTasksNumber: number;
 };
+
+export interface NftItem {
+  id: string;
+  image: string;
+  name: string;
+  description: string;
+  isMinted: boolean;
+  canBeMinted: boolean;
+}

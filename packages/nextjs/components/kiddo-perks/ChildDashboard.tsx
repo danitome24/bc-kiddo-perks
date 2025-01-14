@@ -40,7 +40,7 @@ export const ChildDashboard = () => {
             name: "Shiny Star Badge",
             description: "You're a shining star! Earned by completing 5 tasks. Keep glowing!",
             isMinted: false,
-            canBeMinted: true,
+            canBeMinted: completedTasksNumber >= 5,
           },
           {
             id: "2",
@@ -48,7 +48,7 @@ export const ChildDashboard = () => {
             name: "Task Hero Medal",
             description: "Wow! You're a true hero for finishing 10 tasks. Keep saving the day!",
             isMinted: false,
-            canBeMinted: false,
+            canBeMinted: completedTasksNumber >= 10,
           },
           {
             id: "3",
@@ -56,7 +56,7 @@ export const ChildDashboard = () => {
             name: "Super Helper Trophy",
             description: "For helping out 20 times! You're officially a super helper. Great job!",
             isMinted: false,
-            canBeMinted: false,
+            canBeMinted: completedTasksNumber >= 20,
           },
           {
             id: "4",
@@ -64,7 +64,7 @@ export const ChildDashboard = () => {
             name: "Legendary Champion Crown",
             description: "You’re unstoppable! Earned by completing 50 tasks. All hail the champion!",
             isMinted: false,
-            canBeMinted: false,
+            canBeMinted: completedTasksNumber >= 50,
           },
           {
             id: "5",
@@ -72,7 +72,7 @@ export const ChildDashboard = () => {
             name: "Ultimate Helper Cape",
             description: "100 tasks completed?! You're now the ultimate helper! Time to fly high!",
             isMinted: false,
-            canBeMinted: false,
+            canBeMinted: completedTasksNumber >= 100,
           },
         ]}
         onMint={nftId => {

@@ -1,14 +1,6 @@
 import React from "react";
 import Image from "next/image";
-
-interface NftItem {
-  id: string;
-  image: string;
-  name: string;
-  description: string;
-  isMinted: boolean;
-  canBeMinted: boolean;
-}
+import { NftItem } from "~~/types/kiddoPerks";
 
 interface NftListProps {
   availableNfts: NftItem[];
