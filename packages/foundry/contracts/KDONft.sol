@@ -74,11 +74,9 @@ contract KDONft is ERC721 {
 
   /**
    * @notice Mint an NFT if the user has completed enough tasks to reach a milestone.
-   * @param to Address of the user to mint the NFT for.
    * @param numTasksCompleted Number of tasks the user has completed.
    */
   function mintNft(
-    address to,
     uint256 numTasksCompleted
   ) external hasCompletedMinTasks(numTasksCompleted) {
     if (numTasksCompleted > kiddoPerks.s_childNumTasksCompleted(msg.sender)) {
@@ -87,15 +85,15 @@ contract KDONft is ERC721 {
       );
     }
     TaskMilestone currentTaskMilestone = _getMilestone(numTasksCompleted);
-    if (s_childLastNftMinted[to] == currentTaskMilestone) {
-      revert KDONft__CannotMintNFTMoreThanOnce(to);
+    if (s_childLastNftMinted[msg.sender] == currentTaskMilestone) {
+      revert KDONft__CannotMintNFTMoreThanOnce(msg.sender);
     }
 
-    _safeMint(to, s_nextTokenId);
-    emit KDONftMinted(to, s_nextTokenId);
+    _safeMint(msg.sender, s_nextTokenId);
+    emit KDONftMinted(msg.sender, s_nextTokenId);
     s_nextTokenId++;
 
-    s_childLastNftMinted[to] = currentTaskMilestone;
+    s_childLastNftMinted[msg.sender] = currentTaskMilestone;
   }
 
   /**

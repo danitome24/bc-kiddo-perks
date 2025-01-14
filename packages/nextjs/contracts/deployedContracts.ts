@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     KDOToken: {
-      address: "0xe1da8919f262ee86f9be05059c9280142cf23f48",
+      address: "0x82dc47734901ee7d4f4232f398752cb9dd5daccc",
       abi: [
         {
           type: "constructor",
@@ -450,7 +450,7 @@ const deployedContracts = {
       },
     },
     KiddoPerks: {
-      address: "0x0c8e79f3534b00d9a3d4a856b665bf4ebc22f2ba",
+      address: "0x196dbcbb54b8ec4958c959d8949ebfe87ac2aaaf",
       abi: [
         {
           type: "constructor",
@@ -1451,7 +1451,7 @@ const deployedContracts = {
       },
     },
     KDONft: {
-      address: "0xed1db453c3156ff3155a97ad217b3087d5dc5f6e",
+      address: "0x82c6d3ed4cd33d8ec1e51d0b5cc1d822eaa0c3dc",
       abi: [
         {
           type: "constructor",
@@ -1592,11 +1592,6 @@ const deployedContracts = {
           type: "function",
           name: "mintNft",
           inputs: [
-            {
-              name: "to",
-              type: "address",
-              internalType: "address",
-            },
             {
               name: "numTasksCompleted",
               type: "uint256",

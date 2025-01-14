@@ -21,7 +21,7 @@ export const ChildSummaryCard = ({ child, totalTasks }: ChildSummaryCardProps) =
         </h2>
         <p className="text-lg text-right m-0">{formattedTokenBalance} KDO</p>
         <p className="m-0">
-          Tasks completed: {taskByChild.completedTasksNumber}/{totalTasks?.toString()}
+          Tasks completed: {taskByChild.uniqueCompletedTasksNumber}/{totalTasks?.toString()}
         </p>
 
         <div className="card-actions justify-end">
